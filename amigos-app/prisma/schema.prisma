@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  username      String  @unique
+  password      String
+  role          String
+  sessions      Session[]
+}
+
+model Product {
+  id            Int     @id @default(autoincrement())
+  name          String  
+  description   String
+  image         String
+  price         String
+  type          String
+  orders        OrderItem[]
+}
+
+model Session {
+  id                Int     @id @default(autoincrement())
+  receptionist      User    @relation(fields: [receptionistId], references: [id])
+  receptionistId    Int
+  orders            Order[]
+  iceCreams         IceCreamSession[]
+}
+
+model Order {
+  id            Int       @id @default(autoincrement())
+  session       Session   @relation(fields: [sessionId], references: [id])
+  sessionId     Int
+  products      OrderItem[]
+}
+
+model OrderItem {
+  id            Int       @id @default(autoincrement())
+  product       Product   @relation(fields: [productId], references: [id])
+  productId     Int
+  order         Order     @relation(fields: [orderId], references: [id])
+  orderId       Int
+}
+
+model IceCream {
+  id            Int       @id @default(autoincrement())
+  flavor        String    @unique
+  image         String
+  sessions      IceCreamSession[]
+}
+
+model IceCreamSession {
+  id            Int       @id @default(autoincrement())
+  iceCream      IceCream  @relation(fields: [iceCreamId], references: [id])
+  iceCreamId    Int
+  session       Session   @relation(fields: [sessionId], references: [id])
+  sessionId     Int
+}
