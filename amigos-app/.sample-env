@@ -1,0 +1,4 @@
+# Copy into .env and add values for missing entries, but DO NOT COMMIT
+PORT=8000
+SESSION_DURATION=1d
+TOKEN_SECRET=
