@@ -1,6 +1,9 @@
-import express, { Express, Request, Response } from "express"
-import morgan from "morgan"
-import cors from 'cors'
+import express, { Express, Request, Response } from "express";
+import morgan from "morgan";
+import cors from "cors";
+import "express-async-errors";
+import "./src/utils/errors";
+import { errorHandler } from "./src/middleware/errors";
 require('dotenv').config()
 
 const port = process.env.PORT
@@ -28,3 +31,6 @@ app.listen(port, () => {
 // Routers
 const loginRouter = require('./src/login/login.router')
 app.use("/login", loginRouter)
+
+// Error middleware, must be last line in index.ts
+app.use(errorHandler);
