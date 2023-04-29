@@ -1,15 +1,22 @@
 const jwt = require("jsonwebtoken");
 import bcrypt, { hashSync } from "bcryptjs";
+import { db } from "./db.server";
 
-export function hashPassword(rawPassword: string): string {
-    return bcrypt.hashSync(rawPassword);
+const SALT_LENGTH = 16;
+export async function hashPassword(rawPassword: string): Promise<string> {
+    return bcrypt.hash(rawPassword, SALT_LENGTH);
 }
 
-export function passwordIsValid(userID: number, rawPassword: string): boolean {
-    // TODO: Implement password validation with database
-    const userHashedPassword = hashPassword("password123"); //FIXME Get real hashed password for the given user ID
+export async function passwordIsValid(
+    userID: number,
+    rawPassword: string
+): Promise<boolean> {
+    const user = await db.user.findUnique({ where: { id: userID } });
+    if (user == null) {
+        throw "Invalid user ID";
+    }
 
-    return bcrypt.compareSync(rawPassword, userHashedPassword);
+    return bcrypt.compareSync(rawPassword, user.passwordHash);
 }
 
 export function generateAccessToken(userID: number): string {

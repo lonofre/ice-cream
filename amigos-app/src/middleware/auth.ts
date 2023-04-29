@@ -1,8 +1,13 @@
 const jwt = require("jsonwebtoken");
 import { Express, Request, Response, NextFunction } from "express";
-import { getUserIDFromUsername } from "../user/user.service";
+import { db } from "../utils/db.server";
+import { APIError } from "../utils/errors";
 
-export function loginAuth(req: Request, res: Response, next: NextFunction) {
+export async function loginAuth(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
     try {
         const auth = req.headers.authorization;
         if (!auth) {
@@ -11,10 +16,12 @@ export function loginAuth(req: Request, res: Response, next: NextFunction) {
         const token = auth.split(" ")[1]; // Remove 'Bearer' keyword
         const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
         const tokenUserID = decodedToken.userID;
-        const reqUserID = getUserIDFromUsername(req.body.username);
+        const reqUser = await db.user.findUnique({
+            where: { username: req.body.username },
+        });
 
-        if (reqUserID == null || reqUserID !== tokenUserID) {
-            throw Error;
+        if (reqUser?.id == null || reqUser.id !== tokenUserID) {
+            throw "Invalid token";
         } else {
             next();
         }
@@ -31,18 +38,17 @@ export function loginAuth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function isAdminAuth(req: Request, res: Response, next: NextFunction) {
+export async function isAdminAuth(req: Request, res: Response, next: NextFunction) {
     // Enforces authentication before checking if the user is an admin
-    loginAuth(req, res, () => {
+    loginAuth(req, res, async () => {
         try {
             const userID = req.body.userId;
             if (!userID) {
                 throw "No user ID";
             }
+            const user =  await db.user.findUnique({where: {id: userID}})
 
-            // TODO: Check if the user ID is belongs to an admin
-            const isAdmin: boolean = true; // FIXME Use real data
-            if (!isAdmin) {
+            if (!(user?.role==="admin")) { // TODO Make a role enum
                 throw "Not authorized";
             } else {
                 next();
@@ -59,22 +65,21 @@ export function isAdminAuth(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-export function isReceptionistAuth(
+export function isTabletMasterAuth(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
     // Enforces authentication before checking if the user is a receptionist
-    loginAuth(req, res, () => {
+    loginAuth(req, res, async () => {
         try {
             const userID = req.body.userId;
             if (!userID) {
                 throw "No user ID";
             }
+            const user = await db.user.findUnique({where: {id: userID}})
 
-            // TODO: Check if the user ID belongs to a receptionist
-            const isReceptionist: boolean = true; // FIXME use real data
-            if (!isReceptionist) {
+            if (!(user?.role==="tablet_master")) {
                 throw "Not authorized";
             } else {
                 next();
