@@ -8,6 +8,8 @@
     "prestart": "npm run build",
     "start": "node index.js",
     "clean-js": "tsc --build --clean",
+    "migrate-dev": "npx prisma migrate dev",
+    "clear-migrations": "rm -rf prisma/migrations/",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"nodemon dist/index.js\""
   },

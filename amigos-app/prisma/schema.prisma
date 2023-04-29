@@ -11,57 +11,70 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  username      String  @unique
-  password      String
-  role          String
-  sessions      Session[]
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  passwordHash String
+  role         String
+  sessions     Session[]
 }
 
 model Product {
-  id            Int     @id @default(autoincrement())
-  name          String  
-  description   String
-  image         String
-  price         String
-  type          String
-  orders        OrderItem[]
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  image       String
+  price       String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  orders      OrderItem[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
 }
 
 model Session {
-  id                Int     @id @default(autoincrement())
-  receptionist      User    @relation(fields: [receptionistId], references: [id])
-  receptionistId    Int
-  orders            Order[]
-  iceCreams         IceCreamSession[]
+  id             Int            @id @default(autoincrement())
+  receptionist   User           @relation(fields: [receptionistId], references: [id])
+  receptionistId Int
+  table          Int
+  location       String
+  startTime      DateTime
+  endTime        DateTime
+  orders         Order[]
+  iceCreamOrder  IceCreamOrder?
 }
 
 model Order {
-  id            Int       @id @default(autoincrement())
-  session       Session   @relation(fields: [sessionId], references: [id])
-  sessionId     Int
-  products      OrderItem[]
+  id         Int         @id @default(autoincrement())
+  session    Session     @relation(fields: [sessionId], references: [id])
+  sessionId  Int
+  orderItems OrderItem[]
 }
 
 model OrderItem {
-  id            Int       @id @default(autoincrement())
-  product       Product   @relation(fields: [productId], references: [id])
-  productId     Int
-  order         Order     @relation(fields: [orderId], references: [id])
-  orderId       Int
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  quantity  Int
+  comments  String
 }
 
-model IceCream {
-  id            Int       @id @default(autoincrement())
-  flavor        String    @unique
-  image         String
-  sessions      IceCreamSession[]
+model IceCreamCatalog {
+  id     Int             @id @default(autoincrement())
+  flavor String          @unique
+  image  String
+  orders IceCreamOrder[]
 }
 
-model IceCreamSession {
-  id            Int       @id @default(autoincrement())
-  iceCream      IceCream  @relation(fields: [iceCreamId], references: [id])
-  iceCreamId    Int
-  session       Session   @relation(fields: [sessionId], references: [id])
-  sessionId     Int
+model IceCreamOrder {
+  id                Int             @id @default(autoincrement())
+  iceCreamCatalog   IceCreamCatalog @relation(fields: [iceCreamCatalogId], references: [id])
+  iceCreamCatalogId Int
+  session           Session         @relation(fields: [sessionId], references: [id])
+  sessionId         Int             @unique
 }
