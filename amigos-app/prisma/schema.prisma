@@ -24,8 +24,15 @@ model Product {
   description String
   image       String
   price       String
-  type        String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  Int
   orders      OrderItem[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
 }
 
 model Session {
