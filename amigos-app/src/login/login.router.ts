@@ -7,7 +7,7 @@ import {
 import { APIError, HttpErrorCode } from "../utils/errors";
 import { handleLogin } from "./login.service";
 
-const router = express.Router();
+export const loginRouter = express.Router();
 
 async function loginHandler(req: Request, res: Response): Promise<void> {
     const username = req.body.username;
@@ -30,21 +30,23 @@ async function loginHandler(req: Request, res: Response): Promise<void> {
     const token = await handleLogin(username, password);
     res.send({ token: token });
 }
-router.post("/", loginHandler);
+loginRouter.post("/", loginHandler);
 
 // TODO Used to test login authentication, remove when it's possible to test elsewhere
-router.get("/test/", loginAuth, (req: Request, res: Response) => {
+loginRouter.get("/test/", loginAuth, (req: Request, res: Response) => {
     res.send("Success! :)");
 });
-router.get("/test/admin", adminLoginAuth, (req: Request, res: Response) => {
-    res.send("Success! :)");
-});
-router.get(
+loginRouter.get(
+    "/test/admin",
+    adminLoginAuth,
+    (req: Request, res: Response) => {
+        res.send("Success! :)");
+    }
+);
+loginRouter.get(
     "/test/tablet_master",
     tabletMasterLoginAuth,
     (req: Request, res: Response) => {
         res.send("Success! :)");
     }
 );
-
-module.exports = router;

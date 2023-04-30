@@ -4,33 +4,32 @@ import cors from "cors";
 import "express-async-errors";
 import "./src/utils/errors";
 import { errorHandler } from "./src/middleware/errors";
-require('dotenv').config()
+import { loginRouter } from "./src/login/login.router";
+require("dotenv").config();
 
-const port = process.env.PORT
-const app: Express = express()
+const port = process.env.PORT;
+const app: Express = express();
 
-app.get('/', (req: Request, res: Response) => {
-  res.send("bonjour!")
+app.get("/", (req: Request, res: Response) => {
+    res.send("bonjour!");
 });
 
 // Middlewares
-app.use(morgan('combined'))
-app.use(cors())
-app.use(express.json())
+app.use(morgan("combined"));
+app.use(cors());
+app.use(express.json());
 app.use(
     express.urlencoded({
         extended: true,
     })
 );
 
-
 app.listen(port, () => {
-  console.log(`Listening on port ${port} 🚀🚀🚀`)
+    console.log(`Listening on port ${port} 🚀🚀🚀`);
 });
 
 // Routers
-const loginRouter = require('./src/login/login.router')
-app.use("/login", loginRouter)
+app.use("/login", loginRouter);
 
 // Error middleware, must be last line in index.ts
 app.use(errorHandler);
