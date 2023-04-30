@@ -7,6 +7,10 @@
 </template>
 
 <script setup>
+/**
+ * Displays the categories of the products. It allows
+ * to make queries
+ */
 
 const props = defineProps({
   categories: Array,

@@ -20,6 +20,7 @@ export default defineNuxtConfig({
           preload: true
         }
       }
-    ]
+    ],
+    '@pinia/nuxt',
   ]
 })

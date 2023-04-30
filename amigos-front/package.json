@@ -15,8 +15,14 @@
   },
   "dependencies": {
     "@nuxtjs/google-fonts": "^3.0.0-1",
+    "@pinia/nuxt": "^0.4.9",
+    "@vueuse/core": "^10.1.0",
+    "pinia": "^2.0.35",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
     "primevue": "^3.27.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

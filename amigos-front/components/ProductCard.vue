@@ -6,27 +6,54 @@
       </div>
       <div class="flex justify-content-between align-items-end">
         <p class="text-lg title mr-1">{{ product.name }}</p>
-        <p class="price">{{ formatPrice(product.price) }}</p>
+        <p class="price text-xl">{{ formatPrice(product.price) }}</p>
       </div>
       <div>
-        <p class="text-xs">{{ product.description }}</p>
+        <p class="text-xs text-gray-700">{{ product.description }}</p>
       </div>
     </div>
 
     <div class="flex justify-content-end flex-wrap">
-      <Button label="Agregar" size="small" rounded />
+      <Button @click="addToOrder(product)" :icon="icon" :severity="severity" :label="label" size="small" rounded />
     </div>
   </div>
 </template>
 
 <script setup>
+/**
+ * Shows a product card, that contains a product's data.
+ * It allows add this product to the current order.
+ */
+
 const props = defineProps({
   product: Object
 })
 
-const options = { style: 'currency', currency: 'MXN' };
+const severity = ref('')
+const icon = ref('')
+const label = ref('Agregar')
+
+const options = { style: 'currency', currency: 'MXN' }
 const formatPrice = function(value) {
   return value.toLocaleString('es-MX', options)
+}
+
+const emit = defineEmits('addToOrder')
+
+/**
+ * Add this product to the order
+ * @param {Product} product 
+ */
+const addToOrder = function(product){
+  emit('addToOrder', props.product)
+  setTimeout(() => {
+    severity.value = ''
+    icon.value = ''
+    label.value = 'Agregar'
+  }, 3000)
+  severity.value = 'success'
+  icon.value = 'pi pi-check'
+  label.value = 'Añadido'
 }
 
 </script>
