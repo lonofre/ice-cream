@@ -14,22 +14,39 @@ export async function passwordIsValid(
     return bcrypt.compareSync(rawPassword, user.passwordHash);
 }
 
-export function generateAccessToken(userID: number): string {
-    const token = jwt.sign({ userID: userID }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.SESSION_DURATION,
-    });
-    return token;
+export type AuthTokenPayload = {
+    userID: number;
+};
+
+export function isAuthTokenPayload(obj: any): obj is AuthTokenPayload {
+    return obj.userID != null;
 }
 
-export function authIsValid(authString: string | null): boolean {
+export function extractAuthPayload(
+    authString: string | null | undefined
+): AuthTokenPayload | null {
     if (authString == null) {
-        return false;
+        return null;
     }
     try {
         const token = authString.split(" ")[1]; // Remove 'Bearer' keyword
         const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
-        return true;
+        if (isAuthTokenPayload(decodedToken)) {
+            return decodedToken;
+        } else {
+            return null;
+        }
     } catch {
-        return false;
+        return null;
     }
+}
+
+export function getNewAccessToken(userID: number): string {
+    const payload: AuthTokenPayload = {
+        userID: userID,
+    };
+    const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        expiresIn: process.env.SESSION_DURATION,
+    });
+    return token;
 }
