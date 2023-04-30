@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 import bcrypt, { hashSync } from "bcryptjs";
-import { db } from "./db.server";
+import { User } from "@prisma/client";
 
 const SALT_LENGTH = 16;
 export async function hashPassword(rawPassword: string): Promise<string> {
@@ -8,14 +8,9 @@ export async function hashPassword(rawPassword: string): Promise<string> {
 }
 
 export async function passwordIsValid(
-    userID: number,
+    user: User,
     rawPassword: string
 ): Promise<boolean> {
-    const user = await db.user.findUnique({ where: { id: userID } });
-    if (user == null) {
-        throw "Invalid user ID";
-    }
-
     return bcrypt.compareSync(rawPassword, user.passwordHash);
 }
 
@@ -24,4 +19,17 @@ export function generateAccessToken(userID: number): string {
         expiresIn: process.env.SESSION_DURATION,
     });
     return token;
+}
+
+export function authIsValid(authString: string | null): boolean {
+    if (authString == null) {
+        return false;
+    }
+    try {
+        const token = authString.split(" ")[1]; // Remove 'Bearer' keyword
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+        return true;
+    } catch {
+        return false;
+    }
 }
