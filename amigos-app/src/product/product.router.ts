@@ -16,63 +16,38 @@ export const productRouter = express.Router();
 // Define the CRUD endpoints
 
 // GET: List of all Products
-productRouter.get("/", loginAuth, async (request: Request, response: Response) => {
-    try {
-      const products = await ProductService.getAllProducts();
-      return response.status(200).json(products);
-    } catch (error: any) {
-        throw new APIError(
-            error.message,
-            HttpErrorCode.INTERNAL_SERVER_ERROR,
-            null,
-        );    
-    }
+productRouter.get("/products/", loginAuth, async (request: Request, response: Response) => {
+    const products = await ProductService.getAllProducts();
+    return response.status(200).json(products);
   });
   
   // GET: A single product by ID
-  productRouter.get("/:id", loginAuth, async (request: Request, response: Response) => {
+  productRouter.get("/product/:id", loginAuth, async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
-    try {
-      const product = await ProductService.getProductById(id);
-      if (product) {
+    const product = await ProductService.getProductById(id);
+    if (product) {
         return response.status(200).json(product);
-      }
-      throw new APIError(
+    }
+    throw new APIError(
         "Product not found",
         HttpErrorCode.NOT_FOUND,
         null,
     ); 
-    } catch (error: any) {
-        throw new APIError(
-            error.message,
-            HttpErrorCode.INTERNAL_SERVER_ERROR,
-            null,
-        ); 
-    }
   });
 
   // GET: Products by category
-  productRouter.get("/category/:categoryName", loginAuth, async (request: Request, response: Response) => {
-    const { categoryName } = request.params;
+  productRouter.get("", loginAuth, async (request: Request, response: Response) => {
+    const categoryName = request.query.category as string;
   
-    if (!categoryName) {
+    if (!categoryName || categoryName.trim() === "") {
       throw new APIError(
         "Category name is required",
         HttpErrorCode.BAD_REQUEST,
         null,
       );
     }
-  
-    try {
-      const products = await ProductService.getProductsByCategory(categoryName);
-      response.send(products);
-    } catch (error: any) {
-      throw new APIError(
-        error.message,
-        HttpErrorCode.INTERNAL_SERVER_ERROR,
-        null,
-      );
-    }
+    const products = await ProductService.getProductsByCategory(categoryName);
+    response.send(products);
   });
   
   // POST: Create a Product
@@ -85,15 +60,14 @@ productRouter.get("/", loginAuth, async (request: Request, response: Response) =
     body("price").isNumeric(),
     body("categoryId").isNumeric(),
     async (request: Request, response: Response) => {
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        throw new APIError(
-            "Verify the data and try again",
-            HttpErrorCode.BAD_REQUEST,
-            null,
-        ); 
-      }
-      try {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            throw new APIError(
+                "Verify the data and try again",
+                HttpErrorCode.BAD_REQUEST,
+                null,
+            ); 
+        }
         const { name, description, image, price, categoryId } = request.body;
         const isValidCategoryId = validateCategoryId(categoryId);
         if(!isValidCategoryId){
@@ -106,13 +80,6 @@ productRouter.get("/", loginAuth, async (request: Request, response: Response) =
         const newProduct = { name, description, image, price, categoryId };
         const savedProduct = await ProductService.createProduct(newProduct);
         return response.status(201).json(savedProduct);
-      } catch (error: any) {
-        throw new APIError(
-            error.message,
-            HttpErrorCode.INTERNAL_SERVER_ERROR,
-            null,
-        )
-      }
     }
   );
   
@@ -135,42 +102,26 @@ productRouter.get("/", loginAuth, async (request: Request, response: Response) =
         ); 
       }
       const id: number = parseInt(request.params.id, 10);
-      try {
-        const { name, description, image, price, categoryId } = request.body;
-        const isValidCategoryId = validateCategoryId(categoryId);
-        if(!isValidCategoryId){
-            throw new APIError(
-                "The category id field is not valid",
-                HttpErrorCode.BAD_REQUEST,
-                null,
-            );
-        }
-        const newProduct = { name, description, image, price, categoryId };
-        const savedProduct = await ProductService.updateProductById(newProduct, id);
-        return response.status(201).json(savedProduct);
-      } catch (error: any) {
+      const { name, description, image, price, categoryId } = request.body;
+      const isValidCategoryId = validateCategoryId(categoryId);
+      if(!isValidCategoryId){
         throw new APIError(
-            error.message,
-            HttpErrorCode.INTERNAL_SERVER_ERROR,
+            "The category id field is not valid",
+            HttpErrorCode.BAD_REQUEST,
             null,
-        )
+        );
       }
+      const newProduct = { name, description, image, price, categoryId };
+      const savedProduct = await ProductService.updateProductById(newProduct, id);
+      return response.status(201).json(savedProduct);
     }
   );
   
   // DELETE: Delete an product based on the id
   productRouter.delete("/:id", adminLoginAuth, async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
-    try {
-      await ProductService.deleteProduct(id);
-      return response.status(204).json("Product has been successfully deleted");
-    } catch (error: any) {
-      throw new APIError(
-        error.message,
-        HttpErrorCode.INTERNAL_SERVER_ERROR,
-        null
-      )
-    }
+    const deletedProduct = await ProductService.deleteProduct(id);
+    return response.status(204).json(deletedProduct);
   });
 
 
