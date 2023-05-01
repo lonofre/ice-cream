@@ -5,6 +5,7 @@ import "express-async-errors";
 import "./src/utils/errors";
 import { errorHandler } from "./src/middleware/errors";
 import { loginRouter } from "./src/login/login.router";
+import { productRouter } from "./src/product/product.router";
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -30,6 +31,7 @@ app.listen(port, () => {
 
 // Routers
 app.use("/login", loginRouter);
+app.use("/product", productRouter);
 
 // Error middleware, must be last line in index.ts
 app.use(errorHandler);
