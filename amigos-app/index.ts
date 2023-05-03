@@ -6,6 +6,7 @@ import "./src/utils/errors";
 import { errorHandler } from "./src/middleware/errors";
 import { loginRouter } from "./src/login/login.router";
 import { productRouter } from "./src/product/product.router";
+import { categoryRouter } from "./src/category/category.router";
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -32,6 +33,7 @@ app.listen(port, () => {
 // Routers
 app.use("/login", loginRouter);
 app.use("/product", productRouter);
+app.use("/category", categoryRouter);
 
 // Error middleware, must be last line in index.ts
 app.use(errorHandler);
