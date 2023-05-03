@@ -9,13 +9,14 @@ import { handleLogin } from "../login/login.service";
 import { body, validationResult } from "express-validator";
 
 import * as ProductService from "./product.service"
+import * as CategoryService from "../category/category.service"
 
 // Create a new router instance
 export const productRouter = express.Router();
 
 // Define the CRUD endpoints
 
-// GET: List of all Products
+// GET: List of all products
 productRouter.get("/products/", loginAuth, async (request: Request, response: Response) => {
     const products = await ProductService.getAllProducts();
     return response.status(200).json(products);
@@ -53,65 +54,75 @@ productRouter.get("/products/", loginAuth, async (request: Request, response: Re
   // POST: Create a Product
   // Params: name, description, image, price, categoryId
   productRouter.post(
-    "/", adminLoginAuth,
+    "/",
+    adminLoginAuth,
     body("name").isString(),
     body("description").isString(),
     body("image").isString(),
     body("price").isNumeric(),
-    body("categoryId").isNumeric(),
-    async (request: Request, response: Response) => {
-        const errors = validationResult(request);
-        if (!errors.isEmpty()) {
-            throw new APIError(
-                "Verify the data and try again",
-                HttpErrorCode.BAD_REQUEST,
-                null,
-            ); 
-        }
-        const { name, description, image, price, categoryId } = request.body;
-        const isValidCategoryId = validateCategoryId(categoryId);
-        if(!isValidCategoryId){
-            throw new APIError(
-                "The category id field is not valid",
-                HttpErrorCode.BAD_REQUEST,
-                null,
-            );
-        }
-        const newProduct = { name, description, image, price, categoryId };
-        const savedProduct = await ProductService.createProduct(newProduct);
-        return response.status(201).json(savedProduct);
-    }
-  );
-  
-  // PUT: Updating an Product
-  // Params: firstName, lastName
-  productRouter.put(
-    "/:id", adminLoginAuth,
-    body("name").isString(),
-    body("description").isString(),
-    body("image").isString(),
-    body("price").isNumeric(),
-    body("categoryId").isNumeric(),
+    body("categoryName").isString(),
     async (request: Request, response: Response) => {
       const errors = validationResult(request);
       if (!errors.isEmpty()) {
         throw new APIError(
-            "Verify the data and try again",
-            HttpErrorCode.BAD_REQUEST,
-            null,
-        ); 
-      }
-      const id: number = parseInt(request.params.id, 10);
-      const { name, description, image, price, categoryId } = request.body;
-      const isValidCategoryId = validateCategoryId(categoryId);
-      if(!isValidCategoryId){
-        throw new APIError(
-            "The category id field is not valid",
-            HttpErrorCode.BAD_REQUEST,
-            null,
+          "Verify the data and try again",
+          HttpErrorCode.BAD_REQUEST,
+          null
         );
       }
-      const newProduct = { name, description, image, price, categoryId };
+  
+      const { name, description, image, price, categoryName } = request.body;
+  
+      const category = await CategoryService.getCategoryByName(categoryName);
+  
+      if (!category) {
+        throw new APIError(
+          "The category name field is not valid",
+          HttpErrorCode.BAD_REQUEST,
+          null
+        );
+      }
+  
+      const newProduct = { name, description, image, price, categoryId: category.id };
+      const savedProduct = await ProductService.createProduct(newProduct);
+      return response.status(201).json(savedProduct);
+    }
+  );
+  
+  // PUT: Updating an Product
+  // Params: name, description, image, price, categoryId
+  productRouter.put(
+    "/:id",
+    adminLoginAuth,
+    body("name").isString(),
+    body("description").isString(),
+    body("image").isString(),
+    body("price").isNumeric(),
+    body("categoryName").isString(),
+    async (request: Request, response: Response) => {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) {
+        throw new APIError(
+          "Verify the data and try again",
+          HttpErrorCode.BAD_REQUEST,
+          null
+        );
+      }
+  
+      const id: number = parseInt(request.params.id, 10);
+      const { name, description, image, price, categoryName } = request.body;
+  
+      const category = await CategoryService.getCategoryByName(categoryName);
+  
+      if (!category) {
+        throw new APIError(
+          "The category name field is not valid",
+          HttpErrorCode.BAD_REQUEST,
+          null
+        );
+      }
+  
+      const newProduct = { name, description, image, price, categoryId: category.id };
       const savedProduct = await ProductService.updateProductById(newProduct, id);
       return response.status(201).json(savedProduct);
     }
@@ -123,10 +134,3 @@ productRouter.get("/products/", loginAuth, async (request: Request, response: Re
     const deletedProduct = await ProductService.deleteProduct(id);
     return response.status(204).json(deletedProduct);
   });
-
-
-
-  // TODO: Verifies if a given categoryId is valid
-function validateCategoryId(categoryId: string): boolean {
-    return true;
-}

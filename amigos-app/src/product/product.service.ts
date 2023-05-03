@@ -1,7 +1,7 @@
 import { db } from "../utils/db.server"
 import { APIError, HttpErrorCode } from "../utils/errors";
 
-type Product = {
+type ProductData = {
   id: number;
   name: string;
   description: string;
@@ -12,7 +12,7 @@ type Product = {
 
 
 // Get all products from the database 
-export const getAllProducts = async (): Promise<Product[]> => {
+export const getAllProducts = async (): Promise<ProductData[]> => {
     try{
         return db.product.findMany({
             select: {
@@ -34,7 +34,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
 };
 
 // Get a product by id 
-export const getProductById = async (id: number): Promise<Product | null> => {
+export const getProductById = async (id: number): Promise<ProductData | null> => {
     try{
         return db.product.findUnique({
             where: {
@@ -51,7 +51,7 @@ export const getProductById = async (id: number): Promise<Product | null> => {
 }
 
 // Get a product by category
-export const getProductsByCategory = async (categoryName: string): Promise<Product[]> => {
+export const getProductsByCategory = async (categoryName: string): Promise<ProductData[]> => {
     try {
       const products = await db.product.findMany({
         where: {
@@ -75,8 +75,8 @@ export const getProductsByCategory = async (categoryName: string): Promise<Produ
 
 // Create a new product and save it to the database
 export const createProduct = async (
-    product: Omit<Product, "id">
-  ): Promise<Product> => {
+    product: Omit<ProductData, "id">
+  ): Promise<ProductData> => {
     try{
         const { name, description, image, price, categoryId } = product;
         return db.product.create({
@@ -107,9 +107,9 @@ export const createProduct = async (
   
 // Update an existing product in the database
 export const updateProductById = async (
-    product: Omit<Product, "id">,
+    product: Omit<ProductData, "id">,
     id: number
-  ): Promise<Product> => {
+  ): Promise<ProductData> => {
     try{
         const { name, description, image, price, categoryId } = product;
         return db.product.update({
