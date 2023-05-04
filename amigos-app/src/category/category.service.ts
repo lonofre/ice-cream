@@ -10,12 +10,13 @@ type CategoryData = {
 // Get all categorys from the database 
 export const getAllCategories = async (): Promise<CategoryData[]> => {
     try{
-        return db.category.findMany({
+        const categories = await db.category.findMany({
             select: {
                 id: true, 
                 name: true, 
             },
         });
+        return categories;
     }catch(errror){
         throw new APIError(
             "Failed to get categories",
@@ -28,11 +29,12 @@ export const getAllCategories = async (): Promise<CategoryData[]> => {
 // Get a category by id 
 export const getCategoryById = async (id: number): Promise<CategoryData | null> => {
     try{
-        return db.category.findUnique({
+        const category = await db.category.findUnique({
             where: {
             id,
             },
         });
+        return category;
     }catch(errror){
         throw new APIError(
             "Failed to get category by id",
@@ -45,11 +47,12 @@ export const getCategoryById = async (id: number): Promise<CategoryData | null> 
 // Get a category by name 
 export const getCategoryByName = async (name: string): Promise<CategoryData | null> => {
     try{
-        return db.category.findUnique({
+        const category = await db.category.findUnique({
             where: {
             name,
             },
         });
+        return category;
     }catch(errror){
         throw new APIError(
             "Failed to get category by name",
@@ -65,7 +68,7 @@ export const createCategory = async (
   ): Promise<CategoryData> => {
     try{
         const { name } = category;
-        return db.category.create({
+        const savedCategory = await db.category.create({
         data: {
             name,
         },
@@ -74,6 +77,7 @@ export const createCategory = async (
             name: true,
         },
         });
+        return savedCategory;
     }catch(errror){
         throw new APIError(
             "Failed to create and save category on database",
@@ -90,7 +94,7 @@ export const updateCategoryById = async (
   ): Promise<CategoryData> => {
     try{
         const { name } = category;
-        return db.category.update({
+        const updatedCategory = await db.category.update({
         where: {
             id,
         },
@@ -102,6 +106,7 @@ export const updateCategoryById = async (
             name: true,
         },
         });
+        return updatedCategory;
     }catch(errror){
         throw new APIError(
             "Failed to update category",
