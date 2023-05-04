@@ -1,11 +1,9 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import {
     adminLoginAuth,
     loginAuth,
-    tabletMasterLoginAuth,
 } from "../middleware/auth";
 import { APIError, HttpErrorCode } from "../utils/errors";
-import { handleLogin } from "../login/login.service";
 import { body, validationResult } from "express-validator";
 
 import * as ProductService from "./product.service"
@@ -17,13 +15,30 @@ export const productRouter = express.Router();
 // Define the CRUD endpoints
 
 // GET: List of all products
-productRouter.get("/products/", loginAuth, async (request: Request, response: Response) => {
-    const products = await ProductService.getAllProducts();
-    return response.status(200).json(products);
-  });
+productRouter.get("", loginAuth, async (request: Request, response: Response, next: NextFunction) => {
+  if (request.query.category) {
+    return next(); // Move to the get products by category endpoint
+  }
+  const products = await ProductService.getAllProducts();
+  return response.status(200).json(products);
+});
+
+// GET: Products by category
+productRouter.get("", loginAuth, async (request: Request, response: Response) => {
+  const categoryName = request.query.category as string;
+  if (!categoryName || categoryName.trim() === "") {
+    throw new APIError(
+      "Category name is required",
+      HttpErrorCode.BAD_REQUEST,
+      null,
+    );
+  }
+  const products = await ProductService.getProductsByCategory(categoryName);
+  response.send(products);
+});
   
   // GET: A single product by ID
-  productRouter.get("/product/:id", loginAuth, async (request: Request, response: Response) => {
+  productRouter.get("/:id", loginAuth, async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const product = await ProductService.getProductById(id);
     if (product) {
@@ -34,21 +49,6 @@ productRouter.get("/products/", loginAuth, async (request: Request, response: Re
         HttpErrorCode.NOT_FOUND,
         null,
     ); 
-  });
-
-  // GET: Products by category
-  productRouter.get("", loginAuth, async (request: Request, response: Response) => {
-    const categoryName = request.query.category as string;
-  
-    if (!categoryName || categoryName.trim() === "") {
-      throw new APIError(
-        "Category name is required",
-        HttpErrorCode.BAD_REQUEST,
-        null,
-      );
-    }
-    const products = await ProductService.getProductsByCategory(categoryName);
-    response.send(products);
   });
   
   // POST: Create a Product
@@ -132,5 +132,5 @@ productRouter.get("/products/", loginAuth, async (request: Request, response: Re
   productRouter.delete("/:id", adminLoginAuth, async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const deletedProduct = await ProductService.deleteProduct(id);
-    return response.status(204).json(deletedProduct);
+    return response.status(200).json(deletedProduct);
   });

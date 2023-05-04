@@ -14,7 +14,7 @@ type ProductData = {
 // Get all products from the database 
 export const getAllProducts = async (): Promise<ProductData[]> => {
     try{
-        return db.product.findMany({
+        const products = await db.product.findMany({
             select: {
                 id: true, 
                 name: true, 
@@ -22,8 +22,15 @@ export const getAllProducts = async (): Promise<ProductData[]> => {
                 image: true,
                 price: true,
                 categoryId: true,
+                category: {
+                    select: {
+                        id: true, 
+                        name: true,
+                    }
+                }
             },
         });
+        return products;
     }catch(errror){
         throw new APIError(
             "Failed to get products",
@@ -36,11 +43,15 @@ export const getAllProducts = async (): Promise<ProductData[]> => {
 // Get a product by id 
 export const getProductById = async (id: number): Promise<ProductData | null> => {
     try{
-        return db.product.findUnique({
+        const product = await db.product.findUnique({
             where: {
             id,
             },
+            include: {
+                category: true,
+            }
         });
+        return product;
     }catch(errror){
         throw new APIError(
             "Failed to get products by id",
@@ -79,7 +90,7 @@ export const createProduct = async (
   ): Promise<ProductData> => {
     try{
         const { name, description, image, price, categoryId } = product;
-        return db.product.create({
+        const savedProduct = await db.product.create({
         data: {
             name,
             description,
@@ -96,6 +107,7 @@ export const createProduct = async (
             categoryId: true,
         },
         });
+        return savedProduct;
     }catch(errror){
         throw new APIError(
             "Failed to create and save product on database",
@@ -112,7 +124,7 @@ export const updateProductById = async (
   ): Promise<ProductData> => {
     try{
         const { name, description, image, price, categoryId } = product;
-        return db.product.update({
+        const updatedProduct = await db.product.update({
         where: {
             id,
         },
@@ -132,6 +144,7 @@ export const updateProductById = async (
             categoryId: true,
         },
         });
+        return updatedProduct;
     }catch(errror){
         throw new APIError(
             "Failed to update product",
