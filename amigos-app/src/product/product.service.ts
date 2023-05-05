@@ -14,6 +14,7 @@ type ProductData = {
 export const getAllProducts = async (): Promise<ProductData[]> => {
   try {
     const products = await db.product.findMany({
+      where: { active: true },
       select: {
         id: true,
         name: true,
@@ -41,12 +42,13 @@ export const getAllProducts = async (): Promise<ProductData[]> => {
 
 // Get a product by id
 export const getProductById = async (
-  id: number
+  receivedId: number
 ): Promise<ProductData | null> => {
   try {
-    const product = await db.product.findUnique({
+    const product = await db.product.findFirst({
       where: {
-        id,
+        id : receivedId,
+        active: true,
       },
       include: {
         category: true,
@@ -72,6 +74,7 @@ export const getProductsByCategory = async (
         category: {
           name: categoryName,
         },
+        active: true,
       },
       include: {
         category: true,
@@ -157,15 +160,18 @@ export const updateProductById = async (
   }
 };
 
-// Delete a product from the database
+// Deletes a product in the database by setting active field to FALSE
 export const deleteProduct = async (id: number): Promise<string> => {
   try {
-    await db.product.delete({
+    await db.product.update({
       where: {
         id,
       },
+      data: {
+        active: false,
+      },
     });
-    return "Product deleted succesfully";
+    return "Product deleted successfully";
   } catch (error) {
     throw new APIError(
       "Failed to delete product",
