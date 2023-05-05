@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * Layout for a client that is going to use 
  * the menu to make an order
@@ -23,25 +23,31 @@
 import Button from 'primevue/button'
 import { useOrderStore } from '~/store/order'
 import { storeToRefs } from "pinia"
+import { OrderProduct } from '~/models/product';
 
 const route = useRoute()
 const orderStore = useOrderStore()
-const { products } = storeToRefs(orderStore)
+const { order } = storeToRefs(orderStore)
 const badge = ref("0")
 
-const updateBadge = function(products) {
-  const count = products.reduce((acc, product) => {
-    return product.items + acc
+/**
+ * Updates badge that counts the total items in the order
+ */
+const updateBadge = function(currentOrder: OrderProduct[]) {
+  const count = currentOrder.reduce((acc, item) => {
+    return item.items + acc
   }, 0)
   badge.value = `${count}`
 }
 
 onMounted(() => {
-  updateBadge(products.value)
+  console.log('xd')
+  console.log(order.value)
+  updateBadge(order.value)
 })
 
 orderStore.$subscribe((mutation, state) => {
-  updateBadge(state.products)
+  updateBadge(state.order)
 })
 
 </script>
