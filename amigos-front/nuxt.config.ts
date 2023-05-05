@@ -9,6 +9,12 @@ export default defineNuxtConfig({
   build: {
     transpile: ["primevue"]
   },
+  runtimeConfig: {
+    API_BASE_URL: 'localhost:8000'
+  },
+  imports: {
+    dirs: ['stores']
+  },
   modules: [
     [
       '@nuxtjs/google-fonts',
@@ -21,6 +27,15 @@ export default defineNuxtConfig({
         }
       }
     ],
-    '@pinia/nuxt',
-  ]
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: ['defineStore', 'acceptHMRUUpdate']
+      }
+    ]
+  ],
+  typescript: {
+    typeCheck: true,
+    strict: true
+  },
 })
