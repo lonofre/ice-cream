@@ -152,6 +152,8 @@ productRouter.delete(
   async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const deletedProduct = await ProductService.deleteProduct(id);
-    return response.status(200).json(deletedProduct);
+    const productName = deletedProduct.name;
+    const message = `The product ${productName} was deleted successfully`;
+    return response.status(200).json({ message });
   }
 );

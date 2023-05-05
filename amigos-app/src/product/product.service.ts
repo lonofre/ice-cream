@@ -161,9 +161,9 @@ export const updateProductById = async (
 };
 
 // Deletes a product in the database by setting active field to FALSE
-export const deleteProduct = async (id: number): Promise<string> => {
+export const deleteProduct = async (id: number): Promise<ProductData> => {
   try {
-    await db.product.update({
+    const deletedProduct = await db.product.update({
       where: {
         id,
       },
@@ -171,7 +171,7 @@ export const deleteProduct = async (id: number): Promise<string> => {
         active: false,
       },
     });
-    return "Product deleted successfully";
+    return deletedProduct;
   } catch (error) {
     throw new APIError(
       "Failed to delete product",

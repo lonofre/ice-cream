@@ -120,14 +120,14 @@ export const updateCategoryById = async (
 };
 
 // Delete a category from the database
-export const deleteCategory = async (id: number): Promise<string> => {
+export const deleteCategory = async (id: number): Promise<{ message: string }> => {
   try {
     await db.category.delete({
       where: {
         id,
       },
     });
-    return "Category deleted succesfully";
+    return { message: "Category deleted succesfully" };
   } catch (error) {
     throw new APIError(
       "Failed to delete category",
