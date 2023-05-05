@@ -1,4 +1,5 @@
 import { Order, OrderItem } from "@prisma/client";
+import { Session } from "@prisma/client";
 import { db } from "../utils/db.server";
 import { APIError, HttpErrorCode } from "../utils/errors";
 import * as OrderItemService from "../order-item/order-item.service"
@@ -17,12 +18,36 @@ export const createOrder = async(
     orderItems: orderInfo[]
 ): Promise<OrderData> => {
     try{
+
+        // ! For testing
+        // Create user
+        const user = await db.user.create({
+            data: {
+                "username":"user",
+                "passwordHash":"pass",
+                "role":"rol"
+            }
+        });
+
+        const userId = user.id;
+
+        const session = await db.session.create({
+            data: {
+                "receptionistId" : userId,
+                "table": 2,
+                "location":"No se",
+                "startTime": new Date("01/03/2023"),
+                "endTime": new Date("01/03/2023")
+            }
+        });
+
+        const tempSessionId = session.id;
         const {sessionId} = order;
         // Create the order first
         const savedOrder = await db.order.create(
             {
                 data: {
-                    sessionId,
+                    "sessionId": tempSessionId
                 }
             }
         );
@@ -41,6 +66,7 @@ export const createOrder = async(
 
         return savedOrder;
     }catch(err){
+        console.log("Error: ", err);
         throw new APIError(
             "Failed to create order",
             HttpErrorCode.INTERNAL_SERVER_ERROR,

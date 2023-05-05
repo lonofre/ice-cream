@@ -18,7 +18,7 @@ import * as OrderItemService from "../order-item/order-item.service"
 export const orderRouter = express.Router();
 
 // Returns a list of the items ordered
-orderRouter.get("/order/:id", async (request: Request, response: Response) => {
+orderRouter.get("/:id", async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const order = await OrderService.getOrderById(id);
     if (order) {
@@ -32,15 +32,16 @@ orderRouter.get("/order/:id", async (request: Request, response: Response) => {
     );
 });
 
-orderRouter.post("/order",
+orderRouter.post("/",
     // Validates sessionId exists 
-    body("seesionId").custom(async (sessionId) => {
+    // ! When user service is merged. Uncomment this
+    /* body("seesionId").custom(async (sessionId) => {
         const session: Session | null = await SessionService.validateSessionId(sessionId)
         if (session) {
             return true;
         }
         return false;
-    }),
+    }), */
     // Validates every OrderItem is valid
     body("orderItems").custom(async (orderItems) => {
         for (let i = 0; i < orderItems.length; i++) {
@@ -65,7 +66,7 @@ orderRouter.post("/order",
 
         const { sessionId, orderItems } = request.body;
 
-
+        
         const savedOrder = await OrderService.createOrder({
             sessionId,
         }, orderItems);
@@ -74,7 +75,7 @@ orderRouter.post("/order",
     });
 
 
-orderRouter.put("/order/:id",
+orderRouter.put("/:id",
     // Validates every OrderItem is valid
     body("orderItems").custom(async (orderItems) => {
         for (let i = 0; i < orderItems.length; i++) {
