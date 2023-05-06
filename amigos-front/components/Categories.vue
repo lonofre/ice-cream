@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-content-center ">
-    <Button :label="category" severity="secondary" size="small" :class="'mx-2'" 
-    :outlined="selected != category" rounded v-for="category in categories" 
+    <Button :label="category.name" severity="secondary" size="small" :class="'mx-2'" 
+    :outlined="selected.id != category.id" rounded v-for="category in categories" 
     @click="changeCategory(category)" />
   </div>
 </template>
@@ -14,7 +14,7 @@
 
 const props = defineProps({
   categories: Array,
-  selected: String
+  selected: Object
 })
 
 const emit = defineEmits('change')

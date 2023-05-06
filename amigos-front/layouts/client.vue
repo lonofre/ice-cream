@@ -41,8 +41,6 @@ const updateBadge = function(currentOrder: OrderProduct[]) {
 }
 
 onMounted(() => {
-  console.log('xd')
-  console.log(order.value)
   updateBadge(order.value)
 })
 

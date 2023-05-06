@@ -2,62 +2,61 @@
   <NuxtLayout :name="layout">
     <Categories :categories="categories" :selected="selectedCategory" @changeCategory="changeCategory($event)" />
 
-    <div class="flex justify-content-center flex-wrap">
-      <ProductCard :product="product" v-for="product in products" @addToOrder="addToOrder" />
+    <div class="grid">
+      <div class="sm:col-8 sm:col-offset-2 lg:col-6 lg:col-offset-3 flex justify-content-center flex-wrap">
+        <ProductCard :product="product" v-for="product in products" @addToOrder="addToOrder" />
+      </div>
     </div>
 
   </NuxtLayout>
 </template>
 
 <script setup>
-import { useOrderStore } from '~/store/order'
+import { useOrderStore } from '~/store/order';
+import ProductService from '~/services/product.service';
+import CategoryService from '~/services/category.service';
 
-const orderStore = useOrderStore()
-const { addProduct } = orderStore
+const orderStore = useOrderStore();
+const { addProduct } = orderStore;
+const axios = useNuxtApp().$axios;
+const productService = new ProductService(axios);
+const categoryService = new CategoryService(axios);
+
+// Page data
+const products = ref([]);
+const selectedCategory = ref('desayunos');
+const layout = 'client';
+const categories = ref([]);
 
 
-const layout = 'client'
-// Mock data
-// TODO Update with API call
-const categories = [
-  'desayuno', 'almuerzo', 'hamburguesas', 'postres',
-  'tacos', 'pizza', 'bebidas'
-]
-let selectedCategory = ref('desayuno')
+/**
+ * Requests the products given a category
+ */
+const requestByCategory = async function (category) {
+  const { data, status } = await productService.getOrdersByCategory(category);
+  if (status == 200) {
+    products.value = data;
+  }
+}
 
-// Mock data
-// TODO Update with API call
-const products = [
-  {
-    id: 1,
-    name: 'Tacos al pastor',
-    price: 300.00,
-    image: 'https://images.pexels.com/photos/2087748/pexels-photo-2087748.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, ipsum quo ipsam dolorum nesciunt'
-  },
-  {
-    id: 2,
-    name: 'Tacos de carnitas',
-    price: 300.00,
-    image: 'https://images.pexels.com/photos/2087748/pexels-photo-2087748.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, ipsum quo ipsam dolorum nesciunt'
-  },
-  {
-    id: 3,
-    name: 'Tacos de barbacoa de borrego',
-    price: 300.00,
-    image: 'https://images.pexels.com/photos/2087748/pexels-photo-2087748.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, ipsum quo ipsam dolorum nesciunt'
-  },
+const response = await categoryService.getAllCategories();
+const { data, status } = response;
+if (status == 200) {
+  categories.value = data;
+  if (categories.value.length > 0) {
+    selectedCategory.value = data[0];
+    requestByCategory(selectedCategory.value);
+  }
+}
 
-]
 
 /**
  * Changes the category to fetch new products
  * @param {String} category 
  */
-const changeCategory = function (category) {
+const changeCategory = async function (category) {
   selectedCategory.value = category
+  await requestByCategory(category);
 }
 
 /**
@@ -73,4 +72,5 @@ const addToOrder = function (product) {
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>
