@@ -1,4 +1,4 @@
-import { AxiosStatic } from "axios";
+import { AxiosStatic, AxiosError } from "axios";
 import { Product } from "~/models/product";
 import { Category } from "~/models/category";
 
@@ -27,8 +27,10 @@ export default class ProductService {
 			)
 			return { data, status }
 		} catch (e: any) {
-			const status = e.response.status;
-			return { data: {}, status }
+			if (e instanceof AxiosError) {
+				const status = e?.response?.status
+				return { data: {}, status }
+			}
 		}
 	}
 

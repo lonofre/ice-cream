@@ -34,21 +34,22 @@ const categories = ref([]);
  */
 const requestByCategory = async function (category) {
   const { data, status } = await productService.getOrdersByCategory(category);
-  if (status == 200) {
+  if (status && status == 200) {
     products.value = data;
   }
 }
 
-const response = await categoryService.getAllCategories();
-const { data, status } = response;
-if (status == 200) {
-  categories.value = data;
-  if (categories.value.length > 0) {
-    selectedCategory.value = data[0];
-    requestByCategory(selectedCategory.value);
+onMounted(async () => {
+  const response = await categoryService.getAllCategories();
+  const { data, status } = response;
+  if (status && status == 200) {
+    categories.value = data;
+    if (categories.value.length > 0) {
+      selectedCategory.value = data[0];
+      requestByCategory(selectedCategory.value);
+    }
   }
-}
-
+})
 
 /**
  * Changes the category to fetch new products
@@ -72,5 +73,4 @@ const addToOrder = function (product) {
 
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
