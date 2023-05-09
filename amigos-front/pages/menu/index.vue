@@ -11,10 +11,12 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useOrderStore } from '~/store/order';
 import ProductService from '~/services/product.service';
 import CategoryService from '~/services/category.service';
+import { Product } from '~/models/product';
+import { Category } from '~/models/category';
 
 const orderStore = useOrderStore();
 const { addProduct } = orderStore;
@@ -23,29 +25,29 @@ const productService = new ProductService(axios);
 const categoryService = new CategoryService(axios);
 
 // Page data
-const products = ref([]);
-const selectedCategory = ref('desayunos');
+const categoryDummy = { id: 0, name: 'desayunos'}
+const products = ref<Product[]>([]);
+const selectedCategory = ref(categoryDummy);
 const layout = 'client';
-const categories = ref([]);
+const categories = ref<Category[]>([]);
 
 
 /**
  * Requests the products given a category
  */
-const requestByCategory = async function (category) {
-  const { data, status } = await productService.getOrdersByCategory(category);
-  if (status && status == 200) {
-    products.value = data;
+const requestByCategory = async function (category: Category) {
+  const response = await productService.getOrdersByCategory(category);
+  if (response?.status == 200) {
+    products.value = response.data ?? [];
   }
 }
 
 onMounted(async () => {
   const response = await categoryService.getAllCategories();
-  const { data, status } = response;
-  if (status && status == 200) {
-    categories.value = data;
+  if (response?.status == 200) {
+    categories.value = response.data ?? [];
     if (categories.value.length > 0) {
-      selectedCategory.value = data[0];
+      selectedCategory.value = categories.value[0];
       requestByCategory(selectedCategory.value);
     }
   }
@@ -55,7 +57,7 @@ onMounted(async () => {
  * Changes the category to fetch new products
  * @param {String} category 
  */
-const changeCategory = async function (category) {
+const changeCategory = async function (category: Category) {
   selectedCategory.value = category
   await requestByCategory(category);
 }
@@ -64,7 +66,7 @@ const changeCategory = async function (category) {
  * Add the product to the current order
  * @param {Product} product 
  */
-const addToOrder = function (product) {
+const addToOrder = function (product: Product) {
   addProduct(product)
 }
 
