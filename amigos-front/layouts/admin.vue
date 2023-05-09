@@ -21,11 +21,10 @@
 
 <script setup>
 /**
- * Layout for a client that is going to use 
- * the menu to make an order
+ * Layout for the admin
+ * that contains the routes
  */
 import Button from 'primevue/button'
-import { watch } from 'vue'
 
 const route = useRoute()
 </script>
