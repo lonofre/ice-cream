@@ -6,21 +6,26 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * Displays the categories of the products. It allows
  * to make queries
  */
+import { Category } from '~/models/category';
 
-const props = defineProps({
-  categories: Array,
-  selected: Object
-})
+const props = defineProps<{
+  categories: Array<Category>,
+  selected: Category
+}>();
 
-const emit = defineEmits('change')
 
-const changeCategory = function(category) {
-  emit('changeCategory', category)
+
+const emit = defineEmits<{
+  /* For send the icecream to the parent */
+  (event: 'changeCategory', data: Category): void}>();
+
+const changeCategory = function(category: Category) {
+  emit('changeCategory', category);
 }
 
 </script>

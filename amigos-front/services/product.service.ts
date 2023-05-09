@@ -1,4 +1,4 @@
-import { AxiosStatic, AxiosError } from "axios";
+import { AxiosInstance, AxiosError } from "axios";
 import { Product } from "~/models/product";
 import { Category } from "~/models/category";
 
@@ -9,9 +9,9 @@ import { Category } from "~/models/category";
  */
 export default class ProductService {
 
-	axios: AxiosStatic;
+	axios: AxiosInstance;
 
-	constructor(axios: AxiosStatic) {
+	constructor(axios: AxiosInstance) {
 		this.axios = axios;
 	}
 
@@ -29,7 +29,7 @@ export default class ProductService {
 		} catch (e: any) {
 			if (e instanceof AxiosError) {
 				const status = e?.response?.status
-				return { data: {}, status }
+				return { data: null, status }
 			}
 		}
 	}
