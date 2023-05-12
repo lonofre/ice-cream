@@ -29,7 +29,7 @@ import Dialog from 'primevue/dialog';
 import Dropdown from 'primevue/dropdown'
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import { Icecream } from '~/models/icecream';
+import { Icecream, SingleVote } from '~/models/icecream';
 
 // Component data
 const name = ref<string>('');
@@ -47,7 +47,7 @@ const isDataPresent = computed(() =>
 
 const emit = defineEmits<{
   /* For send the icecream to the parent */
-  (event: 'icecreamEntry', data: object): void,
+  (event: 'icecreamEntry', data: SingleVote): void,
   (event: 'closeDialog'): void
 }>();
 

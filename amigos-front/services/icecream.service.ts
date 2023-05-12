@@ -1,4 +1,4 @@
-import { AxiosStatic, AxiosError } from "axios";
+import { AxiosInstance, AxiosError } from "axios";
 import { Icecream } from "~/models/icecream";
 
 
@@ -7,9 +7,9 @@ import { Icecream } from "~/models/icecream";
  */
 export default class IcecreamService {
 
-  axios: AxiosStatic;
+  axios: AxiosInstance;
 
-  constructor(axios: AxiosStatic) {
+  constructor(axios: AxiosInstance) {
     this.axios = axios;
   }
 
@@ -22,7 +22,7 @@ export default class IcecreamService {
     } catch (e: any) {
       if (e instanceof AxiosError) {
         const status = e?.response?.status
-        return { data: {}, status }
+        return { data: null, status }
       }
     }
   }
