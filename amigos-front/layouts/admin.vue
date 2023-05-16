@@ -12,7 +12,7 @@
                 <NuxtLink to="/admin/usuarios"><Button label="Usuarios" :class="'mr-3'"
                         :text="route.path != '/admin/usuarios'" rounded /></NuxtLink>
                 <Button label="Cerrar sesión" icon="pi pi-arrow-circle-down" :class="'mr-3'"
-                    text severity="danger" rounded />
+                    text severity="danger" @click="logout" rounded />
             </div>
         </div>
         <slot />
@@ -25,8 +25,15 @@
  * that contains the routes
  */
 import Button from 'primevue/button'
+import { useAuthStore } from '~/store/auth';
+
+const authStore = useAuthStore();
 
 const route = useRoute()
+const logout = function(){
+    authStore.logout();
+    navigateTo('/login')
+}
 </script>
 
 <style lang="scss" scoped></style>

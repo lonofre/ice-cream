@@ -1,38 +1,50 @@
 import { useLocalStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { AuthStoredData } from "~/models/auth";
-// import Cookies from "universal-cookie";
-// const cookies = new Cookies()
+
 
 export const useAuthStore = defineStore("auth", {
-    state: () => {
-        return useLocalStorage<AuthStoredData>("auth", {
-            token: null,
-        });
+  state: () => {
+    return useLocalStorage<AuthStoredData>("auth", {
+      token: null,
+    });
+  },
+  getters: {
+    getToken: (state) => {
+      return state.token;
     },
-    getters: {
-        getToken: (state) => {
-            return state.token;
-        },
+  },
+  actions: {
+    hasToken() {
+      return this.token != null;
     },
-    actions: {
-        hasToken() {
-            return this.token != null;
-        },
-        storeToken(token: string) {
-            this.token = token;
-            // Save in local storage
-            localStorage.setItem("auth", JSON.stringify({ token: token }));
-        },
-        logout() {
-            this.token = null;
-            localStorage.removeItem("auth");
-        },
+    storeToken(token: string) {
+      this.token = token;
+      const authCookie = useCookie('auth', { sameSite: true });
+      localStorage.setItem("auth", JSON.stringify({ token: token }));
+      authCookie.value = token;
     },
-    hydrate(storeState, initialState) {
-        const savedState = useLocalStorage<AuthStoredData>("auth", {
-            token: null,
-        });
-        storeState.token = savedState.value.token;
+    /**
+     * To use in a middleware to keep track
+     * of the token
+     */
+    initAuth() {
+      const authCookie = useCookie('auth', { sameSite: true });
+      if(authCookie.value) {
+        this.token = authCookie.value
+      }
     },
+    logout() {
+      this.token = null;
+      const authCookie = useCookie('auth', { sameSite: true });
+      authCookie.value = null;
+      localStorage.removeItem("auth");
+    },
+  },
+  hydrate(storeState, initialState) {
+    const savedState = useLocalStorage<AuthStoredData>("auth", {
+      token: null,
+    });
+    storeState.token = savedState.value.token;
+  },
 });
