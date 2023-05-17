@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+definePageMeta({
+    middleware: ['check-auth', 'is-tablet_master']
+})
+
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";

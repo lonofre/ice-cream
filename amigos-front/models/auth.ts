@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 export interface AuthStoredData {
     token: string | null;
 }
@@ -18,7 +19,9 @@ export function getTokenClaims(authToken: string | null) {
     }
     let tokenClaims = null;
     try {
-        tokenClaims = JSON.parse(window.atob(authToken.split(".")[1]));
+        tokenClaims = JSON.parse(
+            Buffer.from(authToken.split(".")[1], "base64").toString()
+        );
     } catch {
         return null;
     }

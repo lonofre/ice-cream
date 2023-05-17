@@ -38,7 +38,6 @@ async function login() {
         state.errorStatus.message = loginResponse.data.message;
     } else {
         state.errorStatus.show = false;
-
         const role = getTokenRole(loginResponse.data?.token);
         if (role == Role[Role.tablet_master]) {
             router.push("/login/session");

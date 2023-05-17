@@ -31,8 +31,7 @@ export async function adminLoginAuth(
             ? null
             : await db.user.findUnique({ where: { id: tokenPayload?.userID } });
 
-    // TODO Change "admin" constant for a role enum
-    if (user?.role !== "admin") {
+    if (user?.role !== Role[Role.admin]) {
         throw new APIError("Not authorized", HttpErrorCode.UNAUTHORIZED, null);
     } else {
         next();
