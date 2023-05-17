@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 import { Request, Response, NextFunction } from "express";
-import { extractAuthPayload } from "../utils/auth";
+import { Role, extractAuthPayload } from "../utils/auth";
 import { db } from "../utils/db.server";
 import { APIError, HttpErrorCode } from "../utils/errors";
 
@@ -52,8 +52,7 @@ export async function tabletMasterLoginAuth(
             ? null
             : await db.user.findUnique({ where: { id: tokenPayload?.userID } });
 
-    // TODO Change "tablet_master" constant for a role enum
-    if (user?.role !== "tablet_master") {
+    if (user?.role !== Role[Role.tablet_master]) {
         throw new APIError("Not authorized", HttpErrorCode.UNAUTHORIZED, null);
     } else {
         next();
