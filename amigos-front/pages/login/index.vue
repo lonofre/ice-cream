@@ -2,41 +2,56 @@
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import Message from "primevue/message";
-import { LoginFormData } from "~/models/auth";
+import { LoginFormData, Role, getTokenRole } from "~/models/auth";
 import LoginService from "~/services/login.service";
 
+const router = useRouter();
 const axios = useNuxtApp().$axios;
 const loginService = new LoginService(axios);
 
 const state = reactive<{
     loginForm: LoginFormData;
-    loginErrorStatus: { message: string; show: boolean };
+    errorStatus: { message: string; show: boolean };
     buttonIsActive: boolean;
+    buttonIsLoading: boolean;
 }>({
     loginForm: {
         username: "",
         password: "",
     },
-    loginErrorStatus: {
+    errorStatus: {
         message: "",
         show: false,
     },
     buttonIsActive: true,
+    buttonIsLoading: false,
 });
 
 async function login() {
     state.buttonIsActive = false;
+    state.buttonIsLoading = true;
     const loginResponse = await loginService.loginAndStoreCredentials(
         state.loginForm
     );
     if (loginResponse.error) {
-        state.loginErrorStatus.show = true;
-        state.loginErrorStatus.message = loginResponse.data.message;
+        state.errorStatus.show = true;
+        state.errorStatus.message = loginResponse.data.message;
     } else {
-        state.loginErrorStatus.show = false;
-        // router.push("/");
+        state.errorStatus.show = false;
+
+        const role = getTokenRole(loginResponse.data?.token);
+        if (role == Role[Role.tablet_master]) {
+            router.push("/login/session");
+        } else if (role == Role[Role.admin]) {
+            router.push("/admin");
+        } else {
+            state.errorStatus.show = true;
+            state.errorStatus.message =
+                "Unable to validate identity, please try again at a later time";
+        }
     }
     state.buttonIsActive = true;
+    state.buttonIsLoading = false;
 }
 </script>
 
@@ -60,15 +75,19 @@ async function login() {
             <div class="flex flex-row justify-content-end">
                 <Button
                     label="Enviar"
-                    icon="pi pi-user"
+                    :icon="
+                        state.buttonIsLoading
+                            ? 'pi pi-spin pi-spinner'
+                            : 'pi pi-user'
+                    "
                     class="w-4"
                     :disabled="!state.buttonIsActive"
                     @click="login"
                 />
             </div>
-            <div v-if="state.loginErrorStatus.show">
+            <div v-if="state.errorStatus.show">
                 <Message severity="error" :closable="false">{{
-                    state.loginErrorStatus.message
+                    state.errorStatus.message
                 }}</Message>
             </div>
         </Panel>
