@@ -1,14 +1,13 @@
 <template>
   <div>
     <div class="flex justify-content-between flex-wrap card-container purple-container">
-      <div class="flex align-items-center justify-content-center "></div>
       <div class="flex align-items-center justify-content-center ">
         <h1 class="mx-3">50amigos</h1>
       </div>
       <div class="flex align-items-center justify-content-center ">
-        <NuxtLink to="/menu"><Button label="Menú" :class="'mr-3'" :text="route.path != '/menu'" rounded /></NuxtLink>
+        <NuxtLink to="/menu"><Button label="Menú" :class="'mr-3'" severity="info" :text="route.path != '/menu'" rounded /></NuxtLink>
         <NuxtLink to="/order"><Button label="Orden" icon="pi pi-shopping-bag" :badge="badge" :class="'mr-3'"
-            severity="primary" :text="route.path != '/order'" rounded aria-label="Cancel" /></NuxtLink>
+            severity="info" :text="route.path != '/order'" badgeClass="p-badge-info"  rounded aria-label="Cancel" /></NuxtLink>
       </div>
     </div>
     <slot />

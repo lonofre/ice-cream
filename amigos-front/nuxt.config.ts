@@ -1,10 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: '50amigos'
+    }
+  },
   css: [
     "primevue/resources/themes/lara-light-blue/theme.css",
     "primevue/resources/primevue.css",
     "primeflex/primeflex.css",
-    "~/assets/css/global.scss"
+    "~/assets/css/global.scss",
+    "~/assets/css/theme.css"
   ],
   build: {
     transpile: ["primevue"]
@@ -37,5 +43,5 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
     strict: true
-  },
+  }
 })
