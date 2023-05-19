@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosError } from "axios";
-import { SessionFormData, SessionStoredData } from "~/models/session";
+import { SessionFormData, SessionLocation, SessionStoredData } from "~/models/session";
 import { useAuthStore } from "~/store/auth";
 import { useSessionStore } from "~/store/session";
 
@@ -22,7 +22,7 @@ export default class SessionService {
             sessionForm.receptionistId?.toString() ?? ""
         );
         params.append("tableNumber", sessionForm.tableNumber?.toString() ?? "");
-        params.append("location", sessionForm.location ?? "location");
+        params.append("location", sessionForm.location ?? "");
         try {
             const axiosResponse = await this.axios.post<SessionStoredData>(
                 "/session",
