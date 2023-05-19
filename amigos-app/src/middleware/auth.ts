@@ -31,7 +31,7 @@ export async function adminLoginAuth(
             ? null
             : await db.user.findUnique({ where: { id: tokenPayload?.userID } });
 
-    if (user?.role !== Role[Role.admin]) {
+    if (user?.role !== (Role.admin as string)) {
         throw new APIError("Not authorized", HttpErrorCode.UNAUTHORIZED, null);
     } else {
         next();
@@ -51,7 +51,7 @@ export async function tabletMasterLoginAuth(
             ? null
             : await db.user.findUnique({ where: { id: tokenPayload?.userID } });
 
-    if (user?.role !== Role[Role.tablet_master]) {
+    if (user?.role !== (Role.tablet_master as string)) {
         throw new APIError("Not authorized", HttpErrorCode.UNAUTHORIZED, null);
     } else {
         next();

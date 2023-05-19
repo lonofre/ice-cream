@@ -31,9 +31,9 @@ export async function createNewSession(
     }
 }
 
-export async function closeSession(sessionID: number): Promise<void> {
+export async function closeSession(sessionID: number): Promise<Session> {
     try {
-        db.session.update({
+        return db.session.update({
             where: {
                 id: sessionID,
             },

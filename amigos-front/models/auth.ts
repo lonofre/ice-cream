@@ -9,8 +9,8 @@ export interface LoginFormData {
 }
 
 export enum Role {
-    "tablet_master",
-    "admin",
+    tablet_master = "tablet_master",
+    admin = "admin",
 }
 
 export function getTokenClaims(authToken: string | null) {
@@ -28,7 +28,7 @@ export function getTokenClaims(authToken: string | null) {
     return tokenClaims;
 }
 
-export function getTokenRole(authToken: string | null) {
+export function getTokenRole(authToken: string | null): Role | null {
     const claims = getTokenClaims(authToken);
     if (claims?.role == null) {
         return null;
@@ -36,7 +36,7 @@ export function getTokenRole(authToken: string | null) {
     return claims.role;
 }
 
-export function getTokenUserID(authToken: string | null) {
+export function getTokenUserID(authToken: string | null): number | null {
     const claims = getTokenClaims(authToken);
     if (claims?.userID == null) {
         return null;

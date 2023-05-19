@@ -8,7 +8,7 @@ export async function sessionCheck(
     res: Response,
     next: NextFunction
 ) {
-    const sessionId = req.headers?.sessionId;
+    const sessionId = req.headers?.session_id;
     if (sessionId != null && !Array.isArray(sessionId)) {
         const session = await db.session.findUnique({
             where: {
@@ -19,7 +19,6 @@ export async function sessionCheck(
             return next();
         }
     }
-
     throw new APIError(
         "Missing session ID",
         HttpErrorCode.BAD_REQUEST,

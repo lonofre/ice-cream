@@ -3,8 +3,8 @@ import bcrypt, { hashSync } from "bcryptjs";
 import { User } from "@prisma/client";
 
 export enum Role {
-    "tablet_master",
-    "admin",
+    tablet_master = "tablet_master",
+    admin = "admin",
 }
 
 const SALT_LENGTH = 16;
@@ -25,7 +25,7 @@ export type AuthTokenPayload = {
 };
 
 export function isAuthTokenPayload(obj: any): obj is AuthTokenPayload {
-    return obj.userID != null && obj.role!=null;
+    return obj.userID != null && obj.role != null;
 }
 
 export function extractAuthPayload(

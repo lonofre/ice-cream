@@ -46,8 +46,26 @@ export default class SessionService {
         );
 
         if (data != null && !error) {
-            useSessionStore().storeSessionId(data.sessionId);
+            useSessionStore().storeSessionData(data);
         }
         return { data, error };
+    }
+
+    async postSessionClosingAttempt(){
+        let responseData: any;
+        let error = false;
+        try {
+            // The session Id should be automatically be added to the request headers via axios interceptor
+            const axiosResponse = await this.axios.post<{endTime: Date}>("/session/close");
+            responseData = axiosResponse.data
+        }catch (e){
+            if (e instanceof AxiosError) {
+                responseData = e.response!.data;
+                error = true;
+            } else {
+                throw e;
+            }
+        }
+        return { data: responseData, error };
     }
 }

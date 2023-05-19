@@ -5,6 +5,10 @@ import Message from "primevue/message";
 import { LoginFormData, Role, getTokenRole } from "~/models/auth";
 import LoginService from "~/services/login.service";
 
+definePageMeta({
+    middleware: ["check-auth"],
+});
+
 const router = useRouter();
 const axios = useNuxtApp().$axios;
 const loginService = new LoginService(axios);
@@ -39,9 +43,9 @@ async function login() {
     } else {
         state.errorStatus.show = false;
         const role = getTokenRole(loginResponse.data?.token);
-        if (role == Role[Role.tablet_master]) {
+        if (role == (Role.tablet_master as string)) {
             router.push("/login/session");
-        } else if (role == Role[Role.admin]) {
+        } else if (role == (Role.admin as string)) {
             router.push("/admin");
         } else {
             state.errorStatus.show = true;

@@ -16,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         const token = useAuthStore().getToken;
         config.headers.Authorization = token ? `Bearer ${token}` : "";
         const sessionId = useSessionStore().getSessionId;
-        config.headers["sessionId"] = sessionId;
+        config.headers["session_id"] = sessionId;
         return config;
     });
     return {

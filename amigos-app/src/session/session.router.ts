@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
 import { tabletMasterLoginAuth } from "../middleware/auth";
 import { APIError, HttpErrorCode } from "../utils/errors";
-import { createNewSession } from "./session.services";
+import { closeSession, createNewSession } from "./session.services";
 import { db } from "../utils/db.server";
 import { extractAuthPayload } from "../utils/auth";
+import { sessionCheck } from "../middleware/session";
 
 export const sessionRouter = express.Router();
 
@@ -51,6 +52,24 @@ async function sessionPostHandler(req: Request, res: Response): Promise<void> {
         tableNumber,
         location,
     });
-    res.send({ sessionId: session.id });
+    res.send({
+        sessionId: session.id,
+        tableNumber: session.table,
+        location: session.location,
+    });
 }
 sessionRouter.post("/", tabletMasterLoginAuth, sessionPostHandler);
+
+async function sessionClosePostHandler(
+    req: Request,
+    res: Response
+): Promise<void> {
+    const sessionid = parseInt(req.headers.session_id as string);
+    const closedSession = await closeSession(sessionid);
+    res.send({ endTime: closedSession.endTime });
+}
+sessionRouter.post(
+    "/close",
+    [tabletMasterLoginAuth, sessionCheck],
+    sessionClosePostHandler
+);

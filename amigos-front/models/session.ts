@@ -1,5 +1,7 @@
 export interface SessionStoredData {
     sessionId: number | null;
+    tableNumber: number | null;
+    location: SessionLocation | null;
 }
 
 export interface SessionFormData {
