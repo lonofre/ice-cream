@@ -1,5 +1,8 @@
 <template>
   <NuxtLayout :name="layout">
+    <div class="flex justify-content-center">
+      <h2>Las secciones de nuestro menú</h2>
+    </div>
     <Categories :categories="categories" :selected="selectedCategory" @changeCategory="changeCategory($event)" />
 
     <div class="grid">

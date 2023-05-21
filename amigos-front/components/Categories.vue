@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-content-center ">
-    <Button :label="category.name" severity="secondary" size="small" :class="'mx-2'" 
+    <Button :label="capitalize(category.name)" severity="secondary" size="small" :class="'mx-2'" 
     :outlined="selected.id != category.id" rounded v-for="category in categories" 
     @click="changeCategory(category)" />
   </div>
@@ -18,6 +18,9 @@ const props = defineProps<{
   selected: Category
 }>();
 
+const capitalize = function(text: String) {
+  return text[0].toUpperCase() + text.slice(1).toLowerCase();
+}
 
 
 const emit = defineEmits<{
