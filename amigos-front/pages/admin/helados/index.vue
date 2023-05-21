@@ -7,7 +7,9 @@
 
 <script setup>
 const layout = 'admin'
-
+definePageMeta({
+    middleware: ['check-auth', 'is-admin']
+})
 
 </script>
 
