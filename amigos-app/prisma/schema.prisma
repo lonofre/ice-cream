@@ -43,7 +43,7 @@ model Session {
   table          Int
   location       String
   startTime      DateTime
-  endTime        DateTime
+  endTime        DateTime?
   orders         Order[]
   iceCreamOrder  IceCreamOrder?
 }

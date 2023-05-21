@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { getNewAccessToken, passwordIsValid } from "../utils/auth";
+import { Role, getNewAccessToken, passwordIsValid } from "../utils/auth";
 import { db } from "../utils/db.server";
 import { APIError, HttpErrorCode } from "../utils/errors";
 
 export async function handleLogin(
     providedUsername: string,
-    providedPassword: string
+    providedPassword: string,
 ): Promise<string> {
     const user = await db.user.findUnique({
         where: { username: providedUsername },
@@ -17,5 +17,9 @@ export async function handleLogin(
             null
         );
     }
-    return getNewAccessToken(user.id);
+
+    return getNewAccessToken({
+        userID: user.id,
+        role: user.role,
+    });
 }

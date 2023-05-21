@@ -8,7 +8,8 @@ import { loginRouter } from "./src/login/login.router";
 import { productRouter } from "./src/product/product.router";
 import { categoryRouter } from "./src/category/category.router";
 import { icecreamRouter } from "./src/icecream/icecream.router";
-
+import { sessionRouter } from "./src/session/session.router";
+import { orderRouter } from "./src/order/order.router";
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -37,6 +38,8 @@ app.use("/login", loginRouter);
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use('/icecream', icecreamRouter);
+app.use("/session", sessionRouter);
+app.use("/order", orderRouter);
 
 // Error middleware, must be last line in index.ts
 app.use(errorHandler);
