@@ -4,6 +4,7 @@ import { useAuthStore } from "~/store/auth";
 export default defineNuxtPlugin(() => {
     const authStore = useAuthStore();
     addRouteMiddleware("check-auth", (to, from) => {
+        authStore.initAuth();
         const toLogin = to.path == "/login" || to.path == "/login/";
         if (toLogin && authStore.hasToken()) {
             const role = getTokenRole(authStore.getToken);
