@@ -34,4 +34,34 @@ export default class ProductService {
 		}
 	}
 
+	async getAllProducts() {
+		try {
+			const { data, status } = await this.axios.get<Product[]>(
+				'/product',
+			)
+			return { data, status }
+		} catch (e: any) {
+			if (e instanceof AxiosError) {
+				const status = e?.response?.status
+				return { data: null, status }
+			}
+		}
+	}
+
+	async deleteProduct(id: number) {
+		try {
+		  	const { data, status } = await this.axios.delete<Product[]>(
+				`/product/${id}`,
+			);
+		  	return { data, status };
+		} catch (e: any) {
+		  if (e instanceof AxiosError) {
+			const status = e?.response?.status;
+			return { data: e.message, status };
+		  }
+		}
+	  }
+
+	
+
 }
