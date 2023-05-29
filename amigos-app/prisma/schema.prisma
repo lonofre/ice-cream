@@ -23,7 +23,7 @@ model Product {
   name        String
   description String
   image       String
-  price       String
+  price       Float
   category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
   active      Boolean     @default(true)
