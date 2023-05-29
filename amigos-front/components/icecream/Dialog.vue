@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="col flex justify-content-center">
-        <img :src="imageUrl" class="icecream" alt="helado">
+        <img :src="imageUrl" class="icecream">
       </div>
     </div>
     <template #footer>
@@ -34,8 +34,7 @@ import { Icecream, SingleVote } from '~/models/icecream';
 // Component data
 const name = ref<string>('');
 const selectedIcecream = ref();
-const placeHolderImage = '/img/icecream.png';
-const imageUrl = ref<string>(placeHolderImage)
+const imageUrl = ref<string>("")
 const props = defineProps<{
   isActive: boolean,
   options: Icecream[]
@@ -61,7 +60,7 @@ watch(selectedIcecream, (newValue) => {
 const closeDialog = function () {
   selectedIcecream.value = null;
   name.value = ''
-  imageUrl.value = placeHolderImage;
+  imageUrl.value = '';
   emit('closeDialog');
 }
 

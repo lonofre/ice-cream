@@ -6,7 +6,8 @@
       </p>
       <p> Para eso, es nesario que se realice una votación.</p>
       <p> El helado ganador, será el que recibirán todos.</p>
-      <Button label="Elegir helado" @click="isDialogActive = true" :disabled="loading || isVotingCompleted" icon="pi pi-plus" class="ml-3" />
+      <Button label="Elegir helado" @click="isDialogActive = true" :disabled="loading || isVotingCompleted"
+        icon="pi pi-plus" class="ml-3" />
     </div>
     <div class="grid" v-if="!isVotingCompleted">
       <div class="col-6 col-offset-3">
@@ -20,13 +21,21 @@
       </div>
     </div>
     <div class="grid mt-2" v-if="isVotingCompleted">
-      <div class="col-6 col-offset-3">
-        <div class="flex justify-content-center">
-          <img :src="icecreamChoice?.image" alt="">
+      <div class="col-8 col-offset-2 flex grid">
+        <div class="col-6 icecream-result">
+          <div class="flex justify-content-center">
+            <img :src="icecreamChoice?.image" alt="" class="icecream-choice shadow-1">
+          </div>
+          <div class="flex justify-content-center flex-column">
+            <p class="icecream-choice my-2 icecream-data"> 🎉 {{ icecreamChoice?.flavor }} 🎉
+            </p>
+            <p class="icecream-data mt-1">Helados a entregar: <Badge :value="totalVotes()"></Badge>
+            </p>
+          </div>
         </div>
-        <div class="flex justify-content-center">
-          <p> El ganador es el helado de <span class="icecream-choice">{{ icecreamChoice?.flavor }}</span>
-          </p>
+        <div class="col-6">
+          <h2>Su orden ha finalizado</h2>
+          <p class="mt-0">Vuelva pronto :)</p>
         </div>
       </div>
     </div>
@@ -38,10 +47,15 @@
 
 <script setup lang="ts">
 import Button from 'primevue/button';
+import Badge from 'primevue/badge';
 import { ref } from 'vue';
 import IcecreamService from '~/services/icecream.service';
 import { Icecream, SingleVote, Vote } from '~/models/icecream';
-import { rand } from '@vueuse/core';
+import { useSessionStore } from '~/store/session';
+
+definePageMeta({
+    middleware: ['check-auth', 'is-tablet_master', 'check-session']
+})
 
 const axios = useNuxtApp().$axios;
 const icecreamService = new IcecreamService(axios);
@@ -52,6 +66,7 @@ const votes = ref<Vote[]>([])
 const isVotingCompleted = ref<boolean>(false);
 const icecreamChoice = ref<Icecream>();
 const loading = ref<boolean>(false);
+const sessionStore = useSessionStore();
 
 
 onMounted(async () => {
@@ -80,11 +95,23 @@ const receiveVote = function (newVote: SingleVote) {
   }
 }
 
+const totalVotes = function () {
+  return votes.value.reduce((prev: number, current: Vote) => {
+    return current.people.length + prev
+  }, 0);
+}
+
+
+/**
+ * Ends the voting, shows both the result
+ * and the end of the session
+ */
 const endVoting = function () {
   setTimeout(() => {
     isVotingCompleted.value = true;
     icecreamChoice.value = makeIcecreamChoice(votes.value).icecream;
   }, 3000);
+  sessionStore.logout();
   loading.value = true;
 }
 
@@ -100,6 +127,9 @@ const makeIcecreamChoice = function (votes: Vote[]) {
   }
 }
 
+/**
+ * Frequency of votes all icecreams in votes
+ */
 const frequency = function (votes: Vote[]) {
   const votesFrequency: { [key: number]: Vote[] } = {};
   const keys = [];
@@ -115,6 +145,7 @@ const frequency = function (votes: Vote[]) {
 
   return { votesFrequency, keys }
 }
+
 
 
 </script>
@@ -139,13 +170,32 @@ const frequency = function (votes: Vote[]) {
   }
 }
 
-.icecream-choice {
-  font-size: 18px;
+p.icecream-choice {
+  font-size: 30px;
   font-weight: bold;
 }
 
+img.icecream-choice {
+  max-width: 50%;
+}
+
+
 h2.title {
   display: inline-block;
+  text-align: center;
+}
+
+.icecream-data {
+  text-align: center;
+}
+
+.icecream-result {
+  max-width: 60%;
+}
+
+.countdown {
+  font-size: 20px;
+  font-weight: bold;
   text-align: center;
 }
 </style>
