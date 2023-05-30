@@ -16,6 +16,7 @@ model User {
   passwordHash String
   role         String
   sessions     Session[]
+  status       Int
 }
 
 model Product {
