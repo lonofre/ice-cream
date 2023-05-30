@@ -2,11 +2,13 @@
     <NuxtLayout :name="layout">
 
     <H1> AYUDA </H1>
-    <ul>
+    
+    <ul id='v-for-object'>
     <li v-for='user in users'>
     {{ user.name }} - {{ user.role }}
     </li>
     </ul>
+
     </NuxtLayout>
 </template>
 
@@ -16,6 +18,7 @@ definePageMeta({
     middleware: ['check-auth', 'is-admin']
 })
 
+var lista = ['hola', 'adios']
 import { ref } from 'vue';
 import UserService from '~/services/user.service';
 import { User } from '~/models/user';
@@ -29,7 +32,7 @@ const users = ref<User[]>([]);
 
 
 onMounted(async () => {
-    const response = await userService.gerAllUsers();
+    const response = await userService.getAllUsers();
     if (response?.status == 200) {
 	users.value = response.data ?? [];
     }
