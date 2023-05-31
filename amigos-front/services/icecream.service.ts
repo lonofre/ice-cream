@@ -27,4 +27,22 @@ export default class IcecreamService {
     }
   }
 
+  async createOrder(icecreamId: number, quantity: number) {
+    try {
+      const { data: data, status } = await this.axios.post<Icecream[]>(
+        '/icecream/order',
+        {
+          icecreamId,
+          quantity
+        }
+      )
+      return { data, status }
+    } catch (e: any) {
+      if (e instanceof AxiosError) {
+        const status = e?.response?.status
+        return { data: null, status }
+      }
+    }
+  }
+
 }

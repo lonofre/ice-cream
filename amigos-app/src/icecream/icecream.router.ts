@@ -13,6 +13,29 @@ icecreamRouter.get('/',
     return response.status(200).json(icecreams);
   });
 
+
+/**
+ * Saves an icecream order
+ * - request:
+ *    - icecreamId
+ *    - quantity
+ *    - sessionId
+ */
+icecreamRouter.post('/order',
+  async (request: Request, response: Response) => {
+    const sessionId = parseInt(request.headers.session_id as string, 10);
+    const iceCreamId : number = parseInt(request.body.icecreamId, 10);
+    const quantity : number = parseInt(request.body.quantity);
+    const data = {
+      sessionId,
+      quantity,
+      iceCreamCatalogId: iceCreamId
+    }
+
+    const newIceCreamOrder = await IcecreamService.createIcecreamOrder(data);
+    return response.status(201).json(newIceCreamOrder);
+  });
+
 icecreamRouter.post('/',
   body('flavor').isString(),
   body('image').isString(),

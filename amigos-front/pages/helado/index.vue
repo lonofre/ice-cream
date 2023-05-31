@@ -36,6 +36,7 @@
         <div class="col-6">
           <h2>Su orden ha finalizado</h2>
           <p class="mt-0">Vuelva pronto :)</p>
+          <Button label="Salir" @click="goToMenu" ></Button>
         </div>
       </div>
     </div>
@@ -52,13 +53,15 @@ import { ref } from 'vue';
 import IcecreamService from '~/services/icecream.service';
 import { Icecream, SingleVote, Vote } from '~/models/icecream';
 import { useSessionStore } from '~/store/session';
+import SessionService from '~/services/session.service';
 
 definePageMeta({
-    middleware: ['check-auth', 'is-tablet_master', 'check-session']
+  middleware: ['check-auth', 'is-tablet_master', 'check-session']
 })
 
 const axios = useNuxtApp().$axios;
 const icecreamService = new IcecreamService(axios);
+const sessionService = new SessionService(axios);
 const icecreams = ref<Icecream[]>([])
 const layout = 'client';
 const isDialogActive = ref(true);
@@ -106,13 +109,17 @@ const totalVotes = function () {
  * Ends the voting, shows both the result
  * and the end of the session
  */
-const endVoting = function () {
-  setTimeout(() => {
-    isVotingCompleted.value = true;
-    icecreamChoice.value = makeIcecreamChoice(votes.value).icecream;
-  }, 3000);
+const endVoting = async function () {
+  const choice = makeIcecreamChoice(votes.value);
+  icecreamChoice.value = choice.icecream;
+  await icecreamService.createOrder(choice.icecream.id, totalVotes());
+  await sessionService.postSessionClosingAttempt();
   sessionStore.logout();
   loading.value = true;
+  setTimeout(() => {
+    isVotingCompleted.value = true;
+  }, 3000);
+
 }
 
 const makeIcecreamChoice = function (votes: Vote[]) {
@@ -146,6 +153,9 @@ const frequency = function (votes: Vote[]) {
   return { votesFrequency, keys }
 }
 
+const goToMenu = async function () {
+  await navigateTo('/menu')
+}
 
 
 </script>

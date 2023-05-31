@@ -7,6 +7,13 @@ type IcecremData = {
   image: string;
 }
 
+type IceCreamOrder = {
+  id?: number;
+  sessionId: number;
+  iceCreamCatalogId: number;
+  quantity: number;
+}
+
 export const getAllIcecreams = async (): Promise<IcecremData[]> => {
   try {
     const icrecreams = await db.iceCreamCatalog.findMany({
@@ -102,3 +109,22 @@ export const deleteIcecream = async (id: number): Promise<IcecremData> => {
     );
   }
 };
+
+export const createIcecreamOrder = async (order: IceCreamOrder): Promise<IceCreamOrder> => {
+  try {
+    const savedOrder = db.iceCreamOrder.create({
+      data: {
+        iceCreamCatalogId: order.iceCreamCatalogId,
+        sessionId: order.sessionId,
+        quantity: order.quantity
+      }
+    })
+    return savedOrder;
+  } catch (error) {
+    throw new APIError(
+      "Failed to delete product",
+      HttpErrorCode.INTERNAL_SERVER_ERROR,
+      null
+    );
+  }
+}

@@ -9,6 +9,8 @@
         <NuxtLink to="/menu"><Button label="Menú" :class="'mr-3'" :text="route.path != '/menu'" rounded /></NuxtLink>
         <NuxtLink to="/order"><Button label="Orden" icon="pi pi-shopping-bag" :badge="badge" :class="'mr-3'"
             severity="primary" :text="route.path != '/order'" rounded aria-label="Cancel" /></NuxtLink>
+        <NuxtLink to="/helado"><Button label="Helado" icon="pi pi-star-fill" :class="'mr-3'"
+            severity="primary" :text="route.path != '/helado'" rounded aria-label="Cancel" /></NuxtLink>
       </div>
     </div>
     <slot />
@@ -33,7 +35,7 @@ const badge = ref("0")
 /**
  * Updates badge that counts the total items in the order
  */
-const updateBadge = function(currentOrder: OrderProduct[]) {
+const updateBadge = function (currentOrder: OrderProduct[]) {
   const count = currentOrder.reduce((acc, item) => {
     return item.items + acc
   }, 0)
