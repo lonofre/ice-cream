@@ -44,7 +44,7 @@
           </template>
         </Column>
       </DataTable>
-      <Dialog v-model:visible="showProductForm" :modal="true" :style="{ 'width': '50vw' }" :header="productFormMode === 'edit' ? 'Edit Product' : 'Create Product'" :onHide="resetProductForm">
+      <Dialog v-model:visible="showProductForm" :modal="true" :style="{ 'width': '50vw' }" :header="productFormMode === 'edit' ? 'Editar Producto' : 'Crear Producto'" :onHide="resetProductForm">
         <ProductForm :mode="productFormMode" :productId="selectedProductId" />
         <!-- @close="resetProductForm" /> -->
       </Dialog>

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>{{ mode === 'edit' ? 'Edit Product' : 'Create Product' }}</h1>
+    <!-- <h1>{{ mode === 'edit' ? 'Editar Producto' : 'Crear Producto' }}</h1> -->
     <Message severity="success" v-if="showSuccessMessage" closable>
       {{ mode === 'edit' ? 'Producto actualizado correctamente' : 'Producto creado correctamente' }}
     </Message>
     <Message severity="error" v-if="showErrorMessage" closable>
-      El producto no pudo ser {{ mode === 'edit' ? 'actualizado' : 'creado' }} por fallo del servidor
+      El producto no pudo ser {{ mode === 'edit' ? 'editado' : 'creado' }} por fallo del servidor
     </Message>
     <div class="p-fluid">
       <div class="p-field">
