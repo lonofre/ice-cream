@@ -8,12 +8,12 @@
         El producto no pudo ser eliminado por fallo del servidor
       </Message>
     </div>
-    <ProductForm
+    <!-- <ProductForm
       v-if="showProductForm"
       :mode="productFormMode"
       :productId="selectedProductId"
       @close="showProductForm = false"
-    />
+    /> -->
     <div class="product-table">
       <Toolbar class="mb-4">
         <template #start>
@@ -44,6 +44,9 @@
           </template>
         </Column>
       </DataTable>
+      <Dialog v-model="showProductForm" :modal="true" :visible="showProductForm" :style="{ 'width': '50vw' }" :header="productFormMode === 'edit' ? 'Edit Product' : 'Create Product'" :onHide="resetProductForm">
+        <ProductForm :mode="productFormMode" :productId="selectedProductId" @close="resetProductForm" />
+      </Dialog>
     </div>
   </NuxtLayout>
 </template>
@@ -58,6 +61,7 @@ import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
 import Message from 'primevue/message';
+import Dialog from 'primevue/dialog';
 import ProductForm from '~/components/ProductForm.vue';
 
 const layout = 'admin';
@@ -110,6 +114,12 @@ const addProduct = function () {
   selectedProductId.value = 0;
   selectedProduct.value = null;
   showProductForm.value = true;
+};
+
+const resetProductForm = function () {
+  showProductForm.value = false;
+  selectedProductId.value = 0;
+  selectedProduct.value = null;
 };
 
 const deleteProduct = async function (product: Product) {

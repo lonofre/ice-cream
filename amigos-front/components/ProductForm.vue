@@ -30,7 +30,7 @@
       </div> -->
       <div class="p-field">
         <label for="category">Category</label>
-        <Dropdown id="category" v-model="product.category" :options="categoryOptions" />
+        <Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" />
       </div>
       <!-- Other fields for your product form -->
     </div>
@@ -63,11 +63,7 @@ const categoryOptions = [
   'entradas',
   'plato fuerte', 
   'bebidas',
-  'postres',
-  // { label: 'Entradas', value: 'entradas' },
-  // { label: 'Plato Fuerte', value: 'plato fuerte' },
-  // { label: 'Bebidas', value: 'bebidas' },
-  // { label: 'Postres', value: 'postres' },
+  'postre',
 ];
 
 const mode = props.mode;
