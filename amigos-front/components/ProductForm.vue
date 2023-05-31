@@ -24,9 +24,13 @@
         <label for="price">Price</label>
         <InputNumber id="price" v-model="product.price" mode="currency" currency="MXN" />
       </div>
-      <div class="p-field">
+      <!-- <div class="p-field">
         <label for="category">Category</label>
         <InputText id="category" v-model="product.categoryName" />
+      </div> -->
+      <div class="p-field">
+        <label for="category">Category</label>
+        <Dropdown id="category" v-model="product.category" :options="categoryOptions" />
       </div>
       <!-- Other fields for your product form -->
     </div>
@@ -41,6 +45,7 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import ProductService from '~/services/product.service';
 import Message from 'primevue/message';
+import Dropdown from 'primevue/dropdown';
 
 const props = defineProps({
   mode: {
@@ -53,6 +58,17 @@ const props = defineProps({
     default: 0,
   },
 });
+
+const categoryOptions = [
+  'entradas',
+  'plato fuerte', 
+  'bebidas',
+  'postres',
+  // { label: 'Entradas', value: 'entradas' },
+  // { label: 'Plato Fuerte', value: 'plato fuerte' },
+  // { label: 'Bebidas', value: 'bebidas' },
+  // { label: 'Postres', value: 'postres' },
+];
 
 const mode = props.mode;
 const productId = props.productId;
