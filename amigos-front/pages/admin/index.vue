@@ -121,6 +121,7 @@ const resetProductForm = function () {
   showProductForm.value = false;
   selectedProductId.value = 0;
   selectedProduct.value = null;
+  reloadProducts();
 };
 
 const deleteProduct = async function (product: Product) {
@@ -136,6 +137,14 @@ const deleteProduct = async function (product: Product) {
     }
   }
 };
+
+const reloadProducts = async function () {
+  const response = await productService.getAllProducts();
+  if (response?.status === 200) {
+    products.value = response.data ?? [];
+  }
+};
+
 </script>
 
 <style lang="scss" scoped>

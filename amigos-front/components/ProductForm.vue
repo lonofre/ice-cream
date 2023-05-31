@@ -30,7 +30,7 @@
       </div> -->
       <div class="p-field">
         <label for="category">Category</label>
-        <Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" />
+        <Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" :placeholder=product.categoryName />
       </div>
       <!-- Other fields for your product form -->
     </div>
@@ -95,7 +95,7 @@ const fetchProduct = async (productId) => {
   const response = await productService.getProductById(productId);
   if (response.status === 200) {
     product.value = response.data;
-    product.value.category = response.data.category.name;
+    product.value.categoryName = response.data.category.name;
   } else {
     // Handle error
   }
