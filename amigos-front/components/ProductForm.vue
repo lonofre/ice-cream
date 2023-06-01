@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
@@ -38,6 +38,8 @@ import Dropdown from 'primevue/dropdown';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
+
+const emits = defineEmits(['close-dialog']);
 const maxNameLength = 40;
 const maxDescriptionLength = 80;
 
@@ -101,6 +103,7 @@ const saveProduct = async () => {
     mode === 'edit' ? await productService.updateProduct(product.value) : await productService.createProduct(product.value);
   if (response.status === 201) {
     toast.add({ severity: 'success', summary: mode === 'edit' ? 'Producto editado existosamente' : 'Producto creado correctamente', life: 3000 });
+    emits('close-dialog');
   } else {
     toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se pudo editar el producto' : 'No se pudo crear el producto', life: 3000 });
   }
