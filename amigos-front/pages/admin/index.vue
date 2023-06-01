@@ -7,16 +7,25 @@
           <h1>Productos</h1>
         </template>
         <template #end>
-          <Button class="icon-button" icon="pi pi-plus" @click="addProduct"></Button>
+          <Button class="icon-button" label="Agregar producto" icon="pi pi-plus" @click="addProduct"></Button>
         </template>
       </Toolbar>
       <DataTable :value="products" tableStyle="min-width: 50rem">
-        <Column field="name" header="Nombre"></Column>
+        <Column field="name" header="Nombre">
+          <template #body="slotProps">
+            <b>{{ slotProps.data.name }}</b>
+          </template>
+        </Column>
         <Column field="description" header="Descripción"></Column>
-        <Column field="price" header="Precio"></Column>
+        <Column field="price" header="Precio">
+          <template #body="slotProps">
+            {{ formatPrice(slotProps.data.price) }}
+          </template>
+        </Column>
         <Column header="Imagen">
           <template #body="slotProps">
-            <img :src="`${slotProps.data.image}`" :alt="slotProps.data.image" class="shadow-2 border-round" style="width: 64px" />
+            <img :src="`${slotProps.data.image}`" :alt="slotProps.data.image" class="shadow-2 border-round"
+              style="width: 64px" />
           </template>
         </Column>
         <Column field="category.name" header="Categoría">
@@ -31,9 +40,11 @@
           </template>
         </Column>
       </DataTable>
-      <Dialog v-model:visible="showProductForm" :modal="true" :style="{ 'width': '50vw' }" :header="productFormMode === 'edit' ? 'Editar Producto' : 'Crear Producto'" :onHide="resetProductForm">
-        <ProductForm :mode="productFormMode" :productId="selectedProductId" @close-dialog="resetProductForm"/>
+      <Dialog v-model:visible="showProductForm" :modal="true" :style="{ 'width': '50vw' }"
+        :header="productFormMode === 'edit' ? 'Editar Producto' : 'Crear Producto'" :onHide="resetProductForm">
+        <ProductForm :mode="productFormMode" :productId="selectedProductId" @close-dialog="resetProductForm" />
       </Dialog>
+      <ConfirmDialog></ConfirmDialog>
     </div>
   </NuxtLayout>
 </template>
@@ -47,13 +58,15 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
-import Message from 'primevue/message';
 import Dialog from 'primevue/dialog';
 import ProductForm from '~/components/ProductForm.vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useConfirm } from 'primevue/useconfirm';
+import ConfirmDialog from 'primevue/confirmdialog';
 
 const toast = useToast();
+const confirm = useConfirm();
 
 const layout = 'admin';
 definePageMeta({
@@ -114,19 +127,29 @@ const resetProductForm = function () {
   reloadProducts();
 };
 
-const deleteProduct = async function (product: Product) {
-  const confirm = await window.confirm('¿Está seguro que desea eliminar el producto?');
-  if (confirm) {
-    const response = await productService.deleteProduct(product.id);
-    if (response?.status === 200) {
-      toast.add({ severity: 'success', summary: 'Producto eliminado correctamente', life: 3000 });
-      // Update the list of products removing the deleted element
-      products.value = products.value.filter((p) => p.id !== product.id);
-    } else {
-      toast.add({ severity: 'success', summary: 'No se pudo eliminar el producto', life: 3000 });
+
+const deleteProduct = async (product: Product) => {
+  confirm.require({
+    message: '¿Está seguro que desea eliminar el producto?',
+    header: 'Confirmación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: async () => {
+      const response = await productService.deleteProduct(product.id);
+      if (response?.status === 200) {
+        toast.add({ severity: 'success', summary: 'Producto eliminado correctamente', life: 3000 });
+        // Update the list of products removing the deleted element
+        products.value = products.value.filter((p) => p.id !== product.id);
+      } else {
+        toast.add({ severity: 'success', summary: 'No se pudo eliminar el producto', life: 3000 });
+      }
+    },
+    reject: () => {
+
     }
-  }
+  });
 };
+
+
 
 const reloadProducts = async function () {
   const response = await productService.getAllProducts();
@@ -134,6 +157,11 @@ const reloadProducts = async function () {
     products.value = response.data ?? [];
   }
 };
+
+const options = { style: 'currency', currency: 'MXN' }
+const formatPrice = function (value: number) {
+  return value.toLocaleString('es-MX', options)
+}
 
 </script>
 
