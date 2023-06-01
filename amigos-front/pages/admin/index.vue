@@ -1,19 +1,5 @@
 <template>
   <NuxtLayout :name="layout">
-    <!-- <div>
-      <Message severity="success" v-if="showSuccessMessage" closable>
-        Producto eliminado correctamente
-      </Message>
-      <Message severity="error" v-if="showErrorMessage" closable>
-        El producto no pudo ser eliminado por fallo del servidor
-      </Message>
-    </div> -->
-    <!-- <ProductForm
-      v-if="showProductForm"
-      :mode="productFormMode"
-      :productId="selectedProductId"
-      @close="showProductForm = false"
-    /> -->
     <Toast />
     <div class="product-table">
       <Toolbar class="mb-4">
@@ -47,7 +33,6 @@
       </DataTable>
       <Dialog v-model:visible="showProductForm" :modal="true" :style="{ 'width': '50vw' }" :header="productFormMode === 'edit' ? 'Editar Producto' : 'Crear Producto'" :onHide="resetProductForm">
         <ProductForm :mode="productFormMode" :productId="selectedProductId"/>
-        <!-- @close="resetProductForm" /> -->
       </Dialog>
     </div>
   </NuxtLayout>
@@ -135,12 +120,10 @@ const deleteProduct = async function (product: Product) {
     const response = await productService.deleteProduct(product.id);
     if (response?.status === 200) {
       toast.add({ severity: 'success', summary: 'Producto eliminado correctamente', life: 3000 });
-      // showSuccessMessage.value = true;
       // Update the list of products removing the deleted element
       products.value = products.value.filter((p) => p.id !== product.id);
     } else {
       toast.add({ severity: 'success', summary: 'No se pudo eliminar el producto', life: 3000 });
-      // showErrorMessage.value = true;
     }
   }
 };
