@@ -66,7 +66,7 @@ productRouter.post(
   body("description").isString(),
   body("image").isString(),
   // ! It's a string in the shcema. ill change it for testing. Review later.
-  body("price").isString(),
+  body("price").isNumeric(),
   body("categoryName").isString(),
   async (request: Request, response: Response) => {
     const errors = validationResult(request);
