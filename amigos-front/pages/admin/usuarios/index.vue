@@ -1,13 +1,15 @@
 <template>
-    <NuxtLayout :name="layout">
+  <NuxtLayout :name="layout">
+    <!-- Agregar -->
     
-    <ul id='v-for-object'>
-    <li v-for='user in users'>
-      {{ user.username }} - {{ user.role }}
-    </li>
-    </ul>
-
-    </NuxtLayout>
+    
+    <!-- Usuarios:  -->
+    <div class='grid'>
+      <div class="sm:col-8 sm:col-offset-2 lg:col-6 lg:col-offset-3 flex justify-content-center flex-wrap">
+	<Users :user="user" v-for="user in users" />
+      </div>
+    </div>
+</NuxtLayout>
 </template>
 
 <script setup lang="ts">
@@ -16,7 +18,6 @@ definePageMeta({
     middleware: ['check-auth', 'is-admin']
 })
 
-var lista = ['hola', 'adios']
 import { ref } from 'vue';
 import UserService from '~/services/user.service';
 import { User } from '~/models/user';
