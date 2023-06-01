@@ -9,19 +9,19 @@
     </Message>
     <div class="p-fluid">
       <div class="p-field">
-        <label for="name">Name</label>
+        <label for="name">Nombre</label>
         <InputText id="name" v-model="product.name" />
       </div>
       <div class="p-field">
-        <label for="description">Description</label>
+        <label for="description">Descripción</label>
         <InputText id="description" v-model="product.description" />
       </div>
       <div class="p-field">
-        <label for="image">Image</label>
+        <label for="image">Imagen</label>
         <InputText id="image" v-model="product.image" />
       </div>
       <div class="p-field">
-        <label for="price">Price</label>
+        <label for="price">Precio</label>
         <InputNumber id="price" v-model="product.price" mode="currency" currency="MXN" />
       </div>
       <!-- <div class="p-field">
@@ -29,8 +29,8 @@
         <InputText id="category" v-model="product.categoryName" />
       </div> -->
       <div class="p-field">
-        <label for="category">Category</label>
-        <Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" :placeholder=product.categoryName />
+        <label for="category">Categoría</label>
+<Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" :placeholder="product.categoryName ? product.categoryName : 'Select a category'" />
       </div>
       <!-- Other fields for your product form -->
     </div>
@@ -73,7 +73,7 @@ const showSuccessMessage = ref(false);
 const showErrorMessage = ref(false);
 
 const product = ref({
-  id: null,
+  // id: null,
   name: '',
   description: '',
   image: '',
