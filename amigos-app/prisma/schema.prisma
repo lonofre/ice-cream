@@ -69,6 +69,7 @@ model IceCreamCatalog {
   id     Int             @id @default(autoincrement())
   flavor String          @unique
   image  String
+  active Boolean         @default(true)
   orders IceCreamOrder[]
 }
 
@@ -78,4 +79,5 @@ model IceCreamOrder {
   iceCreamCatalogId Int
   session           Session         @relation(fields: [sessionId], references: [id])
   sessionId         Int             @unique
+  quantity          Int             
 }

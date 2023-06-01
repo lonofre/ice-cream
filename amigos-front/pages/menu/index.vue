@@ -12,11 +12,9 @@
 </template>
 
 <script setup lang="ts">
-
 definePageMeta({
     middleware: ['check-auth', 'is-tablet_master', 'check-session']
 })
-
 import { useOrderStore } from '~/store/order';
 import ProductService from '~/services/product.service';
 import CategoryService from '~/services/category.service';
