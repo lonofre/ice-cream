@@ -4,11 +4,11 @@
     <div class="p-fluid">
       <div class="p-field">
         <label for="name">Nombre</label>
-        <InputText id="name" v-model="product.name" />
+        <InputText id="name" v-model="product.name" :maxlength="maxNameLength"/>
       </div>
       <div class="p-field">
         <label for="description">Descripción</label>
-        <InputText id="description" v-model="product.description" />
+        <InputText id="description" v-model="product.description" :maxlength="maxDescriptionLength"/>
       </div>
       <div class="p-field">
         <label for="image">Imagen</label>
@@ -23,7 +23,7 @@
 <Dropdown id="category" v-model="product.categoryName" :options="categoryOptions" :placeholder="product.categoryName ? product.categoryName : 'Select a category'" />
       </div>
     </div>
-    <Button label="Save" @click="saveProduct" />
+    <Button label="Guardar" @click="saveProduct" />
   </div>
 </template>
 
@@ -37,6 +37,9 @@ import Message from 'primevue/message';
 import Dropdown from 'primevue/dropdown';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+
+const maxNameLength = 40;
+const maxDescriptionLength = 80;
 
 const toast = useToast();
 
