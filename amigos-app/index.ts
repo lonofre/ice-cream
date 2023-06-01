@@ -9,6 +9,7 @@ import { productRouter } from "./src/product/product.router";
 import { categoryRouter } from "./src/category/category.router";
 import { sessionRouter } from "./src/session/session.router";
 import { orderRouter } from "./src/order/order.router";
+import { userRouter } from "./src/user/user.router";
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -34,6 +35,7 @@ app.listen(port, () => {
 
 // Routers
 app.use("/login", loginRouter);
+app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/session", sessionRouter);

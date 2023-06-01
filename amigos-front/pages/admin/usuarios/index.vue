@@ -1,11 +1,9 @@
 <template>
     <NuxtLayout :name="layout">
-
-    <H1> AYUDA </H1>
     
     <ul id='v-for-object'>
     <li v-for='user in users'>
-    {{ user.name }} - {{ user.role }}
+      {{ user.username }} - {{ user.role }}
     </li>
     </ul>
 
@@ -27,7 +25,7 @@ const axios = useNuxtApp().$axios;
 const userService = new UserService(axios);
 
 /* Page Data */
-const layout = ref('admin')
+const layout = 'admin'
 const users = ref<User[]>([]);
 
 

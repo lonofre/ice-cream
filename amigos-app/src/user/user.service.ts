@@ -9,6 +9,7 @@ type UserData = {
     status: number;
 };
 
+
 // Get users from db
 export const getUsers = async(): Promise<UserData[]> =>{
     try{
@@ -18,7 +19,7 @@ export const getUsers = async(): Promise<UserData[]> =>{
 		username: true,
 		passwordHash: true,
 		role: true,
-		status: number,
+		status: true,
 	    },
 	});	
     }catch(error){
@@ -52,7 +53,7 @@ export const getUsersByUserName = async(userName:string): Promise<UserData | nul
     try{
 	return db.user.findUnique({
 	    where:{
-		name: userName,
+		username: userName,
 	    },
 	});
     }catch(error){
@@ -65,14 +66,21 @@ export const getUsersByUserName = async(userName:string): Promise<UserData | nul
 };
 
 // get user by status
-export const getUsersByStatus = async(userStatus:number): Promise<UserData | null> =>{
+export const getUsersByStatus = async(userStatus:number): Promise<UserData[] | null> =>{
     try {
 	const users = await db.user.findMany({
             where:{
 		status: userStatus,
             },
+	    select: {
+		id: true,
+		username: true,
+		passwordHash: true,
+		role: true,
+		status: true,
+	    }
 	});
-	return users;p
+	return users;
     } catch (error) {
 	throw new APIError(
             "Failed to get users by status",
@@ -87,18 +95,20 @@ export const createUser = async (
     user: Omit<UserData, "id">
     ): Promise<UserData> => {
     try{
-        const { username, passwordHash, role} = user;
+        const { username, passwordHash, role, status} = user;
         return db.user.create({
             data: {
 		username,
 		passwordHash, 
-		role, 
+		role,
+		status,
             },
             select: {
 		id: true,
 		username: true,
 		passwordHash: true, 
-		role: true, 
+		role: true,
+		status: true,
             },
         });
     }catch(errror){
@@ -111,12 +121,11 @@ export const createUser = async (
 };
 
 // update user with id
-export const updateUserById = async (
-    product: Omit<UserData, "id">,
-    id: number
+export const updateUser = async (
+    user: UserData
   ): Promise<UserData> => {
     try{
-        const { username, passwordHash, role } = user;
+        const { id, username, passwordHash, role, status } = user;
         return db.user.update({
         where: {
             id,
@@ -133,7 +142,6 @@ export const updateUserById = async (
             passwordHash: true,
             role: true,
 	    status: true,
-	    // sessions
         },
         });
     }catch(errror){

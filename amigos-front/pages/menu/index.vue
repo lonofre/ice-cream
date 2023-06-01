@@ -4,7 +4,7 @@
 
     <div class="grid">
       <div class="sm:col-8 sm:col-offset-2 lg:col-6 lg:col-offset-3 flex justify-content-center flex-wrap">
-        <ProductCard :product="product" v-for="product in products" @addToOrder="addToOrder" />
+    <ProductCard :product="product" v-for="product in products" @addToOrder="addToOrder" />
       </div>
     </div>
 
@@ -74,10 +74,6 @@ const changeCategory = async function (category: Category) {
 const addToOrder = function (product: Product) {
   addProduct(product)
 }
-
-
-
-
 </script>
 
 <style lang="scss" scoped></style>

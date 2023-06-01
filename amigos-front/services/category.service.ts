@@ -2,7 +2,6 @@ import { AxiosInstance, AxiosError } from "axios";
 import { Category } from "~/models/category";
 
 
-
 /**
  * Servie to fecth category data from the API
  */
