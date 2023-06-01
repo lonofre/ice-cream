@@ -1,12 +1,13 @@
 <template>
   <div>
     <!-- <h1>{{ mode === 'edit' ? 'Editar Producto' : 'Crear Producto' }}</h1> -->
-    <Message severity="success" v-if="showSuccessMessage" closable>
+    <!-- <Message severity="success" v-if="showSuccessMessage" closable>
       {{ mode === 'edit' ? 'Producto actualizado correctamente' : 'Producto creado correctamente' }}
     </Message>
     <Message severity="error" v-if="showErrorMessage" closable>
       El producto no pudo ser {{ mode === 'edit' ? 'editado' : 'creado' }} por fallo del servidor
-    </Message>
+    </Message> -->
+    <Toast />
     <div class="p-fluid">
       <div class="p-field">
         <label for="name">Nombre</label>
@@ -46,6 +47,10 @@ import Button from 'primevue/button';
 import ProductService from '~/services/product.service';
 import Message from 'primevue/message';
 import Dropdown from 'primevue/dropdown';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const props = defineProps({
   mode: {
@@ -71,6 +76,7 @@ const productId = props.productId;
 
 const showSuccessMessage = ref(false);
 const showErrorMessage = ref(false);
+// const showProductForm = ref(true);
 
 const product = ref({
   // id: null,
@@ -105,10 +111,13 @@ const saveProduct = async () => {
   const response =
     mode === 'edit' ? await productService.updateProduct(product.value) : await productService.createProduct(product.value);
   if (response.status === 201) {
-    showSuccessMessage.value = true;
+    // showSuccessMessage.value = true;
+    toast.add({ severity: 'success', summary: mode === 'edit' ? 'Producto editado existosamente' : 'Producto creado correctamente', life: 3000 });
   } else {
-    showErrorMessage.value = true;
+    toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se pudo editar el producto' : 'No se pudo crear el producto', life: 3000 });
+    // showErrorMessage.value = true;
   }
+  // showProductForm.value = false;
 };
 </script>
 
