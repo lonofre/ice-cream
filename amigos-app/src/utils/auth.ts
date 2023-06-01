@@ -2,6 +2,11 @@ const jwt = require("jsonwebtoken");
 import bcrypt, { hashSync } from "bcryptjs";
 import { User } from "@prisma/client";
 
+export enum Role {
+    tablet_master = "tablet_master",
+    admin = "admin",
+}
+
 const SALT_LENGTH = 16;
 export async function hashPassword(rawPassword: string): Promise<string> {
     return bcrypt.hash(rawPassword, SALT_LENGTH);
@@ -16,10 +21,11 @@ export async function passwordIsValid(
 
 export type AuthTokenPayload = {
     userID: number;
+    role: string;
 };
 
 export function isAuthTokenPayload(obj: any): obj is AuthTokenPayload {
-    return obj.userID != null;
+    return obj.userID != null && obj.role != null;
 }
 
 export function extractAuthPayload(
@@ -41,10 +47,7 @@ export function extractAuthPayload(
     }
 }
 
-export function getNewAccessToken(userID: number): string {
-    const payload: AuthTokenPayload = {
-        userID: userID,
-    };
+export function getNewAccessToken(payload: AuthTokenPayload): string {
     const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
         expiresIn: process.env.SESSION_DURATION,
     });

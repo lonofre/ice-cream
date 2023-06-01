@@ -23,7 +23,7 @@ model Product {
   name        String
   description String
   image       String
-  price       String
+  price       Float
   category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
   active      Boolean     @default(true)
@@ -43,7 +43,7 @@ model Session {
   table          Int
   location       String
   startTime      DateTime
-  endTime        DateTime
+  endTime        DateTime?
   orders         Order[]
   iceCreamOrder  IceCreamOrder?
 }
@@ -69,6 +69,7 @@ model IceCreamCatalog {
   id     Int             @id @default(autoincrement())
   flavor String          @unique
   image  String
+  active Boolean         @default(true)
   orders IceCreamOrder[]
 }
 
@@ -78,4 +79,5 @@ model IceCreamOrder {
   iceCreamCatalogId Int
   session           Session         @relation(fields: [sessionId], references: [id])
   sessionId         Int             @unique
+  quantity          Int             
 }
