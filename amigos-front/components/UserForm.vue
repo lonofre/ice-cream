@@ -1,22 +1,41 @@
 <template>
-  <div>
-    <Toast />
-    <div class="p-fluid">
-      <div class="p-field">
-        <label for="name">UserName</label>
-        <InputText id="name" v-model="user.username" :maxlength="maxNameLength"/>
-      </div>
-      <div class="p-field">
-        <label for="role">Rol</label>
-        <InputText id="role" v-model="user.role" :maxlength="maxDescriptionLength"/>
-      </div>
+<div>
+  <Toast />
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="username">Usuario</label>
+      <InputText id="username" v-model="user.username"/>
     </div>
+    <div class="p-field">
+      <label for="passwordHash">Contraseña</label>
+      <InputText id="name" v-model="user.passwordHash" />
+    </div>
+    <div class="p-field">
+      <label for="role">Rol</label>
+      <Dropdown id="role" v-model="user.role" :options="roleOptions" :placeholder="user.role ? user.role : 'Esoge un rol'" />
+    </div>
+    <div class="p-field">
+      <label for="status">Status</label>
+      <Dropdown id="status" v-model="user.status" :options="statusOptions" :placeholder="user.status ? user.status : '1 para activo. 0 inactivo'" />
+    </div>
+  </div>
     <Button label="Guardar" @click="saveUser" />
   </div>
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue';
+  
+  const roleOptions = [
+  'tablet_master',
+  'admin', 
+  ];
+
+  const statusOptions = [
+  '1',
+  '0', 
+  ];
+  
+  import { ref, onMounted, defineEmits } from 'vue';
   import InputText from 'primevue/inputtext';
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
@@ -25,15 +44,12 @@
   import Dropdown from 'primevue/dropdown';
   import Toast from 'primevue/toast';
   import { useToast } from 'primevue/usetoast';
-  import { useConfirm } from 'primevue/useconfirm';
-  import ConfirmDialog from 'primevue/confirmdialog';
-  
+
+
   const emits = defineEmits(['close-dialog']);
-  const maxNameLength = 40;
-  const maxDescriptionLength = 80;
-  
+
   const toast = useToast();
-  
+
   const props = defineProps({
   mode: {
   type: String,
@@ -45,55 +61,57 @@
   default: 0,
   },
   });
-  
-  const mode = props.mode;
-  const userId = props.userId;
-  
-  const showSuccessMessage = ref(false);
-  const showErrorMessage = ref(false);
-  
-  const user = ref({
-  username: '',
+
+const mode = props.mode;
+const userId = props.userId;
+
+const showSuccessMessage = ref(false);
+const showErrorMessage = ref(false);
+
+const user = ref({
+  username: '', 
+  passwordHash: '', 
   role: '',
-  });
-  
-  const axios = useNuxtApp().$axios;
-  const userService = new UserService(axios);
-  
-  
-  onMounted(async () => {
+  status: '',
+});
+
+const axios = useNuxtApp().$axios;
+const userService = new UserService(axios);
+
+
+onMounted(async () => {
   if (mode === 'edit' && userId) {
-  await fetchUser(userId);
+    await fetchUser(userId);
   }
-  });
-  
-  const fetchUser = async (userId) => {
-  const response = await userService.getUsersById(userId);
+});
+
+const fetchUser = async (userId) => {
+  const response = await userService.getUserById(userId);
   if (response.status === 200) {
-  user.value = response.data;
+    user.value = response.data;
   } else {
-  toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se puede editar el usuario ahora' : 'No se puede crear el usuario ahora', life: 3000 });
+    toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se puede editar el usuario ahora' : 'No se puede crear el usuario ahora', life: 3000 });
   }
-  };
-  
-  const saveUser = async () => {
+};
+
+const saveUser = async () => {
   const response =
-  mode === 'edit' ? await userService.updateUser(user.value) : await userService.createUser(user.value);
+    mode === 'edit' ? await userService.updateUser(user.value) : await userService.createUser(user.value);
   if (response.status === 201) {
-  toast.add({ severity: 'success', summary: mode === 'edit' ? 'Usuario editado existosamente' : 'Usuario creado correctamente', life: 3000 });
-  emits('close-dialog');
+    toast.add({ severity: 'success', summary: mode === 'edit' ? 'Usuario editado existosamente' : 'Usuario creado correctamente', life: 3000 });
+    emits('close-dialog');
   } else {
-  toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se pudo editar el usuario' : 'No se pudo crear el usuario', life: 3000 });
+    toast.add({ severity: 'danger', summary: mode === 'edit' ? 'No se pudo editar el Usuario' : 'No se pudo crear el usuario', life: 3000 });
   }
-  };
+};
 </script>
 
 <style lang="scss" scoped>
-  h1 {
+h1 {
   margin-top: 20px;
 }
 
 .p-field {
   margin-bottom: 20px;
 }
-</style>
+</style>  

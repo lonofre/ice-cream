@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosError } from "axios";
-import { User } from "~/models/user"
+import { User } from "~/models/user";
 
 export default class UserService {
 
@@ -9,13 +9,13 @@ export default class UserService {
 	this.axios = axios;
     }
 
-    async getUsersByRole(roleReq: string) {
+    async getUsersByRole(roleC: string) {
 	try {
 	    const { data, status } = await this.axios.get<User[]>(
 		'/user',
 		{
 		    params: {
-			role: roleReq
+			role: roleC
 		    }
 		}
 	    )
@@ -31,7 +31,7 @@ export default class UserService {
     async getAllUsers() {
 	try {
 	    const { data, status } = await this.axios.get<User[]>(
-		'/user'
+		'/user',
 	    )
 	    return { data, status }
 	} catch (e: any) {
@@ -42,18 +42,18 @@ export default class UserService {
 	}
     }
 
-    async getUsersById(id: number) {
-		try {
-		    const { data, status } = await this.axios.get<User>(
-			`/user/${id}`,
-		    )
-		    return { data, status }
-		} catch (e: any) {
-		    if (e instanceof AxiosError) {
-			const status = e?.response?.status
-			return { data: null, status }
-		    }
-		}
+    async getActiveUsers() {
+	try {
+	    const { data, status } = await this.axios.get<User[]>(
+		'/user',
+	    )
+	    return { data, status }
+	} catch (e: any) {
+	    if (e instanceof AxiosError) {
+		const status = e?.response?.status
+		return { data: null, status }
+	    }
+	}
     }
     
     async createUser(user: User) {
@@ -68,7 +68,7 @@ export default class UserService {
 	    }
 	}
     }
-
+    
     async updateUser(user: User) {
 	try {
 	    const { data, status } = await this.axios.put<User>(`/user/${user.id}`, user);
@@ -81,6 +81,23 @@ export default class UserService {
 	}
     }
     
+
+    async getUserById(id: number) {
+	try {
+	    const { data, status } = await this.axios.get<User[]>(
+		`/user/${id}`,
+	    )
+	    return { data, status }
+	} catch (e: any) {
+	    if (e instanceof AxiosError) {
+		const status = e?.response?.status
+		return { data: null, status }
+	    }
+	}
+    }
+
+
+
     async deleteUser(id: number) {
 	try {
 	    const { data, status } = await this.axios.delete<User[]>(
@@ -94,5 +111,47 @@ export default class UserService {
 	    }
 	}
     }
+
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
