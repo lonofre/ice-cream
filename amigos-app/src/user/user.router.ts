@@ -21,7 +21,7 @@ export const userRouter = express.Router();
  * users by role
  */
 userRouter.get("", loginAuth, async (request: Request, response: Response) => {
-    const users = await UserService.getUsers();
+    const users = await UserService.getAllUsers();
     return response.status(200).json(users);
 });
 
@@ -62,7 +62,7 @@ userRouter.post(
     body("username").isString(),
     body("passwordHash").isString(),
     body("role").isString(),
-    body("status").isInt(),
+    body("status").isNumeric(),
     async (request: Request, response: Response) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -103,33 +103,19 @@ userRouter.put(
 	const id: number = parseInt(request.params.id, 10);
 	const { username, passwordHash, role, status } = request.body;  
 	const newUser = { id, username, passwordHash, role, status};
-	const saved = await UserService.updateUser(newUser);
+	const saved = await UserService.updateUserById(newUser, id);
 	return response.status(201).json(saved);
     }
 );
 
-/**
- * update
- */
-userRouter.put(
-    "/:id", adminLoginAuth,
-    body("username").isString(),
-    body("passwordHash").isString(),
-    body("role").isString(),
-    body("status").isInt(),
-    async (request: Request, response: Response) => {
-	const id: number = parseInt(request.params.id, 10);
-	
-	const {username, passwordHash, role, status} = request.body;
-
-	const data = {
-	    id,
-	    username,
-	    passwordHash,
-	    role,
-	    status,
-	};
-	
-	const updated = await UserService.updateUser(data);
-	return response.status(200).json(updated);
-    });
+userRouter.delete(
+  "/:id",
+  adminLoginAuth,
+  async (request: Request, response: Response) => {
+    const id: number = parseInt(request.params.id, 10);
+    const deletedUser = await UserService.deleteUser(id);
+    const userName = deletedUser.username;
+    const message = `The product ${userName} was deleted successfully`;
+    return response.status(200).json({ message });
+  }
+);

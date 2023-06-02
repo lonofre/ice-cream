@@ -11,7 +11,7 @@ type UserData = {
 
 
 // Get users from db
-export const getUsers = async(): Promise<UserData[]> =>{
+export const getAllUsers = async(): Promise<UserData[]> =>{
     try{
 	return db.user.findMany({
 	    select: {
@@ -32,13 +32,14 @@ export const getUsers = async(): Promise<UserData[]> =>{
 };
 
 // Get user by id
-export const getUsersById = async(id:number): Promise<UserData | null> =>{
+export const getUsersById = async(received:number): Promise<UserData | null> =>{
     try{
-	return db.user.findUnique({
+	const user = await db.user.findFirst({
 	    where:{
-		id,
+		id:received,
 	    },
 	});
+	return user;
     }catch(error){
 	throw new APIError(
 	    "Failed to get users by id",
@@ -51,11 +52,12 @@ export const getUsersById = async(id:number): Promise<UserData | null> =>{
 // get user by username
 export const getUsersByUserName = async(userName:string): Promise<UserData | null> =>{
     try{
-	return db.user.findUnique({
+	const user = await db.user.findFirst({
 	    where:{
 		username: userName,
 	    },
 	});
+	return user;
     }catch(error){
 	throw new APIError(
 	    "Failed to get users by name",
@@ -121,12 +123,13 @@ export const createUser = async (
 };
 
 // update user with id
-export const updateUser = async (
-    user: UserData
+export const updateUserById = async (    
+    user: Omit<UserData, "id">,
+    id: number
   ): Promise<UserData> => {
     try{
-        const { id, username, passwordHash, role, status } = user;
-        return db.user.update({
+        const { username, passwordHash, role, status } = user;
+        const updated = db.user.update({
         where: {
             id,
         },
@@ -144,6 +147,7 @@ export const updateUser = async (
 	    status: true,
         },
         });
+	return updated;
     }catch(errror){
         throw new APIError(
             "Failed to update user",
@@ -151,4 +155,24 @@ export const updateUser = async (
             null
         )
     }
+};
+
+export const deleteUser = async (id: number): Promise<UserData> => {
+  try {
+    const deletedUser = await db.user.update({
+	where: {
+            id,
+	},
+	data: {
+	    status: 0,
+	},
+    });
+    return deletedUser;
+  }catch (error) {
+    throw new APIError(
+      "Failed to delete user",
+      HttpErrorCode.INTERNAL_SERVER_ERROR,
+      null
+    );
+  }
 };
