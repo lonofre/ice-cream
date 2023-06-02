@@ -36,7 +36,6 @@ const { orderItem, addToOrder, index } = defineProps(["orderItem", "addToOrder",
 const emit = defineEmits(["input"]);
 const infoProd = await productService.getProductById(orderItem.id);
 const info = infoProd.data.data;
-console.log(info);
 const inputVal = ref(orderItem.quantity);
 // Datos harcodeados para pruebas
 // "https://www.cocinavital.mx/wp-content/uploads/2017/08/receta-masa-hot-cakes.jpg"

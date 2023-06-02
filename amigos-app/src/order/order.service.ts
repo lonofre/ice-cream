@@ -19,35 +19,13 @@ export const createOrder = async(
 ): Promise<OrderData> => {
     try{
 
-        // ! For testing
-        // Create user
-        const user = await db.user.create({
-            data: {
-                "username":"user",
-                "passwordHash":"pass",
-                "role":"rol"
-            }
-        });
-
-        const userId = user.id;
-
-        const session = await db.session.create({
-            data: {
-                "receptionistId" : userId,
-                "table": 2,
-                "location":"No se",
-                "startTime": new Date("01/03/2023"),
-                "endTime": new Date("01/03/2023")
-            }
-        });
-
-        const tempSessionId = session.id;
+        
         const {sessionId} = order;
         // Create the order first
         const savedOrder = await db.order.create(
             {
                 data: {
-                    "sessionId": tempSessionId
+                    "sessionId": sessionId
                 }
             }
         );

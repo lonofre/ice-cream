@@ -5,11 +5,15 @@ import { Product, OrderProduct } from '~/models/product'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
-    order: useLocalStorage<OrderProduct[]>('order', [])
+    order: useLocalStorage<OrderProduct[]>('order', []),
+    orderId: useLocalStorage<string>("orderId", null)
   }),
   getters: {
     getOrder: (state) => {
       return state.order
+    },
+    getOrderId: (state) => {
+      return state.orderId;
     }
   },
   actions: {
@@ -32,11 +36,23 @@ export const useOrderStore = defineStore('order', {
       // Stores order in local storage since useLocalStorage deep
       // doesn't work with order[i].items
       localStorage.setItem('order', JSON.stringify(this.order))
+    },
+    // Clears the current order after it is created or updated
+    clearOrder(){
+      this.order = [];
+      localStorage.removeItem("order");
+    },
+
+    setOrderId(id: number) {
+      this.orderId = "" + id;
+      localStorage.setItem("orderId", "" + id);
     }
   },
   // To load data from the client side
   hydrate(storeState, initialState) {
     const order = useLocalStorage<OrderProduct[]>('order', []);
+    const orderId = useLocalStorage<string>('orderId', null);
     storeState.order = order.value;
+    storeState.orderId = orderId.value;
   },
 });

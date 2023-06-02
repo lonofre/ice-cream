@@ -25,4 +25,43 @@ export default class OrderService{
             }
         }
     }
+
+    async createOrder(orderItems: OrderItem[], sessionId: number){
+        try{
+           const order = await this.axios.post(
+            "http://localhost:8000/order",
+            {
+                sessionId,
+                orderItems
+            }
+           );
+           console.log(order);
+           return order;
+        }catch(e: any){
+            console.log(e);
+            if(e instanceof AxiosError){
+                const status = e?.response?.status;
+                return {data: null, status};
+            }
+        }
+    }
+
+    async updateOrder(orderId: number, orderItems: OrderItem[]){
+        try{
+            const updatedOrder = await this.axios.put(
+                `http://localhost:8000/order/${orderId}`,
+                {
+                    orderItems
+                }
+            );
+            console.log(updatedOrder);
+            return updatedOrder;
+        }catch(e:any){
+            console.log(e);
+            if(e instanceof AxiosError){
+                const status = e?.response?.status;
+                return {data: null, status};
+            }
+        }
+    }
 }
