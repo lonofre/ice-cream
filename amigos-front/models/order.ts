@@ -1,7 +1,6 @@
 import {OrderProduct} from "./product";
 
-export interface Order{
+export interface OrderItem{
     id: number,
-    sessionId: number,
-    orderItems: OrderProduct[]
+    quantity: number
 }

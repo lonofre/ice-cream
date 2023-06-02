@@ -11,12 +11,16 @@
 </template>
 
 <script setup>
-
+import OrderService from '~/services/order.service';
 const layout = 'client'
 /* definePageMeta({
     middleware: ['check-auth', 'is-tablet_master', 'check-session']
 }) */
 // Los elementos a agregar a la orden
+const axios = useNuxtApp().$axios;
+const orderService = new OrderService(axios);
+const bdOrder = await orderService.getOrderItems(1);
+const ordenados = bdOrder.data;
 const newItems = [{
     id:1,
     quantity:1
@@ -24,15 +28,6 @@ const newItems = [{
     id:2,
     quantity:3
 }]
-// Los elementos que ya estan en la orden
-const ordenados = [{
-    id: 1,
-    quantity:4
-}, {
-    id:2,
-    quantity:3
-}
-]
 </script>
 
 <style lang="scss" scoped></style>

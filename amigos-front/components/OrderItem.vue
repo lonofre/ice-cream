@@ -15,7 +15,7 @@
             <div class="w-12" v-else>
                 <InputNumber v-model="inputVal" inputId="horizontal-buttons" showButtons buttonLayout="horizontal" :step="1"
     decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
-    mode="decimal" @input="handleChange"/>
+    mode="decimal" @input="handleChange" class="numberInput"/>
             </div>
 
         </div>
@@ -24,16 +24,18 @@
 
 <script setup>
 import InputNumber from 'primevue/inputnumber';
+import ProductService from '~/services/product.service';
+const axios = useNuxtApp().$axios;
+const productService = new ProductService(axios);
 const { orderItem, addToOrder, index } = defineProps(["orderItem", "addToOrder", "index"]);
 const emit = defineEmits(["input"]);
+const infoProd = await productService.getProductById(orderItem.id);
+const info = infoProd.data.data;
+console.log(info);
 const inputVal = ref(orderItem.quantity);
 // Datos harcodeados para pruebas
-const info = {
-    image : "https://www.cocinavital.mx/wp-content/uploads/2017/08/receta-masa-hot-cakes.jpg",
-    name: "Hot cakes",
-    description : "Unos hotcakes muy rikolinos",
-    price: 10
-}
+// "https://www.cocinavital.mx/wp-content/uploads/2017/08/receta-masa-hot-cakes.jpg"
+// https://assets.unileversolutions.com/recipes-v2/210995.jpg
 
 // Si el valor llega a 0, emitimos el cambio al padre
 const handleChange = () => {
@@ -58,5 +60,9 @@ img{
     color: white;
     font-size: small;
     border-radius: 15%;
+}
+
+.numberInput{
+    width: 50px;
 }
 </style>

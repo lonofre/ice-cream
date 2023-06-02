@@ -21,6 +21,7 @@ export const orderRouter = express.Router();
 orderRouter.get("/:id", async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const order = await OrderService.getOrderById(id);
+    console.log("Orden : \n " + JSON.stringify(order));
     if (order) {
         return response.status(200).json(order);
     }
