@@ -34,4 +34,76 @@ export default class ProductService {
 		}
 	}
 
+	async getAllProducts() {
+		try {
+			const { data, status } = await this.axios.get<Product[]>(
+				'/product',
+			)
+			return { data, status }
+		} catch (e: any) {
+			if (e instanceof AxiosError) {
+				const status = e?.response?.status
+				return { data: null, status }
+			}
+		}
+	}
+
+	async createProduct(product: Product) {
+		try {
+		  const { data, status } = await this.axios.post<Product>('/product', product);
+		  return { data, status };
+		} catch (e: any) {
+			console.log(e.message);
+		  if (e instanceof AxiosError) {
+			const status = e?.response?.status;
+			return { data: null, status };
+		  }
+		}
+	  }
+	  
+	  async updateProduct(product: Product) {
+		try {
+		  const { data, status } = await this.axios.put<Product>(`/product/${product.id}`, product);
+		  return { data, status };
+		} catch (e: any) {
+		  if (e instanceof AxiosError) {
+			const status = e?.response?.status;
+			return { data: null, status };
+		  }
+		}
+	  }
+	  
+
+	async getProductById(id: number) {
+		try {
+			const { data, status } = await this.axios.get<Product[]>(
+				`/product/${id}`,
+			)
+			return { data, status }
+		} catch (e: any) {
+			if (e instanceof AxiosError) {
+				const status = e?.response?.status
+				return { data: null, status }
+			}
+		}
+	}
+
+
+
+	async deleteProduct(id: number) {
+		try {
+		  	const { data, status } = await this.axios.delete<Product[]>(
+				`/product/${id}`,
+			);
+		  	return { data, status };
+		} catch (e: any) {
+		  if (e instanceof AxiosError) {
+			const status = e?.response?.status;
+			return { data: e.message, status };
+		  }
+		}
+	  }
+
+	
+
 }

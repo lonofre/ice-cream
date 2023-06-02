@@ -1,5 +1,8 @@
 <template>
   <NuxtLayout :name="layout">
+    <div class="flex justify-content-center">
+      <h2>Las secciones de nuestro menú</h2>
+    </div>
     <Categories :categories="categories" :selected="selectedCategory" @changeCategory="changeCategory($event)" />
 
     <div class="grid">
@@ -12,11 +15,9 @@
 </template>
 
 <script setup lang="ts">
-
 definePageMeta({
     middleware: ['check-auth', 'is-tablet_master', 'check-session']
 })
-
 import { useOrderStore } from '~/store/order';
 import ProductService from '~/services/product.service';
 import CategoryService from '~/services/category.service';
