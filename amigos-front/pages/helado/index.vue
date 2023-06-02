@@ -9,6 +9,9 @@
       <Button label="Elegir helado" @click="isDialogActive = true" :disabled="loading || isVotingCompleted"
         icon="pi pi-plus" class="ml-3" />
     </div>
+    <!-- 
+      Voting in progress
+     -->
     <div class="grid" v-if="!isVotingCompleted">
       <div class="col-6 col-offset-3">
         <div v-if="votes.length > 0">
@@ -20,6 +23,10 @@
         </div>
       </div>
     </div>
+    <!-- 
+      Screen when the voting was
+     completed 
+    -->
     <div class="grid mt-2" v-if="isVotingCompleted">
       <div class="col-8 col-offset-2 flex grid">
         <div class="col-6 icecream-result">
@@ -41,6 +48,7 @@
       </div>
     </div>
 
+    <!-- Dialog -->
     <IcecreamDialog :isActive="isDialogActive" :options="icecreams" @closeDialog="isDialogActive = false"
       @icecreamEntry="receiveVote" />
   </NuxtLayout>
@@ -64,7 +72,7 @@ const icecreamService = new IcecreamService(axios);
 const sessionService = new SessionService(axios);
 const icecreams = ref<Icecream[]>([])
 const layout = 'client';
-const isDialogActive = ref(true);
+const isDialogActive = ref(false);
 const votes = ref<Vote[]>([])
 const isVotingCompleted = ref<boolean>(false);
 const icecreamChoice = ref<Icecream>();

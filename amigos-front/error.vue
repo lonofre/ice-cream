@@ -16,9 +16,7 @@ const titleError = ref("Ocurrió algo inesperado");
 
 
 const handleError = function () {
-  clearError();
-  const router = useRouter();
-  router.back();
+  clearError({ redirect: '/login' })
 }
 
 </script>
