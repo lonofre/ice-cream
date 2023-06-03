@@ -8,7 +8,7 @@
     </div>
     <div class="p-field">
       <label for="passwordHash">Contraseña</label>
-      <InputText id="name" v-model="user.passwordHash" />
+      <InputText id="passwordHash" v-model="user.passwordHash" />
     </div>
     <div class="p-field">
       <label for="role">Rol</label>
@@ -64,7 +64,6 @@ const user = ref({
   username: '', 
   passwordHash: '', 
   role: '',
-  status: '',
 });
 
 const axios = useNuxtApp().$axios;

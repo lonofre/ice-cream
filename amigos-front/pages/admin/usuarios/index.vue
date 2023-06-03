@@ -12,7 +12,7 @@
     </Toolbar>
     
     <DataTable :value="users" tableStyle="min-width: 50rem">
-      <Column field="name" header="Nombre">
+      <Column field="username" header="Nombre">
 	<template #body="slotProps">
 	  <b>{{ slotProps.data.username }}</b>
 	</template>
@@ -110,7 +110,7 @@ const editUser = function (user: User) {
     showUserForm.value = true;
 };
 
-const addUser = function (user: User) {
+const addUser = function () {
     userFormMode.value = 'create';
     selectedUserId.value = 0;
     selectedUser.value = null;

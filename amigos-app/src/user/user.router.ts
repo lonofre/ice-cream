@@ -26,15 +26,15 @@ userRouter.get(
 );
 
 // GET: Users by Role
-userRouter.get(
-  "/:role",
-  loginAuth,
-  async (request: Request, response: Response) => {
-      const role:string = request.params.role;
-      const users = await UserService.getUsersByRole(role);
-    response.send(users);
-  }
-);
+// userRouter.get(
+//   "/:role",
+//   loginAuth,
+//   async (request: Request, response: Response) => {
+//       const role:string = request.params.role;
+//       const users = await UserService.getUsersByRole(role);
+//     response.send(users);
+//   }
+// );
 
 // GET: A single user by ID
 userRouter.get(
@@ -56,7 +56,7 @@ userRouter.post(
     body("username").isString(),
     body("passwordHash").isString(),
     body("role").isString(),
-    body("status").isNumeric(),
+    // body("status").isNumeric(), Como no se pide el status en el form esto no debe checarse
     async (request: Request, response: Response) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
