@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     transpile: ["primevue"]
   },
   runtimeConfig: {
-    API_BASE_URL: 'localhost:8000'
+    API_BASE_URL: process.env.API_BASE_URL
   },
   imports: {
     dirs: ['stores']
