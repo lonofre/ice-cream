@@ -58,6 +58,8 @@ orderRouter.post("/",
     async (request: Request, response: Response) => {
         const errors = validationResult(request);
         if (!errors.isEmpty()) {
+            console.log(request.body);
+            console.log("errores", errors);
             throw new APIError(
                 "Verify the data and try again",
                 HttpErrorCode.BAD_REQUEST,

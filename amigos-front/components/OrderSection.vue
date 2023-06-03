@@ -2,8 +2,8 @@
     <div>
         <h3 class="mb-5"><slot/></h3>
         <div class="w-12 flex flex-column gap-3">
-            <div v-for="(item, index) in itemsList" :key="item.id">
-                <OrderItem :orderItem="item" :index="index" :addToOrder="addToOrder" @input="updateList(index)"></OrderItem>
+            <div v-for="(item, index) in orderList" :key="item.id">
+                <OrderItem :orderItem="item" :index="index" :addToOrder="addToOrder" @input="updateList"></OrderItem>
             </div>
             <div v-if="createOrder && addToOrder">
                 <Button @click="createOrderBtn">Crear orden</Button>
@@ -16,43 +16,33 @@
 </template>
 
 <script setup>
-
-import { useSessionStore } from '~/store/session';
 import OrderService from '~/services/order.service';
 import { useOrderStore } from '~/store/order';
 
 const orderStore = useOrderStore();
 const orderId = orderStore.getOrderId;
+const emit = defineEmits('createNewOrder', 'updateCurrentOrder', "updateProduct");
 
 const axios = useNuxtApp().$axios;
 const orderService = new OrderService(axios)
 
-const { orderList, addToOrder, createOrder } = defineProps(["orderList", "addToOrder", "createOrder"]);
+const { orderList, addToOrder, createOrder } = 
+    defineProps(["orderList", "addToOrder", "createOrder"]);
 
-const sessionStore = useSessionStore();
-const sessionId = sessionStore.getSessionId;
-
-const itemQuantity = ref(orderList.map(el => el.quantity));
-const itemId = ref(orderList.map(el => el.id));
-const itemsList = ref(orderList);
-
-const updateList = (index) => {
-    itemQuantity.value.splice(index, 1);
-    itemId.value.splice(index, 1);
-    itemsList.value.splice(index, 1);
-
+const updateList = (data) => {
+    emit("updateProduct", data)
 };
 
 const createOrderBtn = async() => {
-    const order = await orderService.createOrder(itemsList, sessionId);
-    orderStore.setOrderId(order.data.id);
-    orderStore.clearOrder();
-    alert("Orden creada con id : " + JSON.stringify(order.data))
+    emit('createNewOrder');
 }
 
 const updateOrder = async()=>{
-    const updatedOrder = await orderService.updateOrder(orderId, itemsList);
+    emit('updateCurrentOrder');
+    /*
+    const updatedOrder = await orderService.updateOrder(orderId, itemsList.value);
     alert("Orden actualizada");
+    */
 }
 
 

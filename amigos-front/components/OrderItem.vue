@@ -37,15 +37,10 @@ const emit = defineEmits(["input"]);
 const infoProd = await productService.getProductById(orderItem.id);
 const info = infoProd.data.data;
 const inputVal = ref(orderItem.quantity);
-// Datos harcodeados para pruebas
-// "https://www.cocinavital.mx/wp-content/uploads/2017/08/receta-masa-hot-cakes.jpg"
-// https://assets.unileversolutions.com/recipes-v2/210995.jpg
 
-// Si el valor llega a 0, emitimos el cambio al padre
-const handleChange = () => {
-    if (inputVal.value == 0) {
-        emit("input", index.value);
-    }
+
+const handleChange = (event) => {
+    emit("input", {value: event.value, id: orderItem.id});
 }
 
 let price = computed(() => inputVal.value * info.price);

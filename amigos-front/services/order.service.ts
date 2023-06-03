@@ -18,7 +18,6 @@ export default class OrderService{
 
             return items
         }catch(e: any){
-            console.log(e);
             if(e instanceof AxiosError){
                 const status = e?.response?.status;
                 return {data: null, status};
@@ -35,10 +34,8 @@ export default class OrderService{
                 orderItems
             }
            );
-           console.log(order);
            return order;
         }catch(e: any){
-            console.log(e);
             if(e instanceof AxiosError){
                 const status = e?.response?.status;
                 return {data: null, status};
@@ -54,10 +51,8 @@ export default class OrderService{
                     orderItems
                 }
             );
-            console.log(updatedOrder);
             return updatedOrder;
         }catch(e:any){
-            console.log(e);
             if(e instanceof AxiosError){
                 const status = e?.response?.status;
                 return {data: null, status};
