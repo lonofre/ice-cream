@@ -12,34 +12,29 @@
     </Toolbar>
     
     <DataTable :value="users" tableStyle="min-width: 50rem">
-    <Column field="name" header="Nombre">
-    <template #body="slotProps">
-    <b>{{ slotProps.data.username }}</b>
-    </template>
-    </Column>
-    <Column field="role" header="Role">
-    <template #body="slotProps">
-    {{ slotProps.data.role }}
-</template>
-    </Column>
-
-    <Column field="status" header="Status">
-    <template #body="slotProps">
-    <template v-if="slotProps.data.status==1">
-    <Tag :value="active" :severity="getStatusLabel(slotProps.data.status)" />
-    </template>	
-    <template v-else>    
-    <Tag :value="inactivo" :severity="getStatusLabel(slotProps.data.status)" />
-    </template>
-    </template>
-    </Column>
-    
-    <Column header="Acciones" style="min-width:8rem">
-    <template #body="slotProps">
-    <Button class="icon-button" icon="pi pi-pencil" @click="editUser(slotProps.data)"></Button>
-    <Button class="icon-button" icon="pi pi-trash" @click="deleteUser(slotProps.data)"></Button>
-    </template>
-    </Column>
+      <Column field="name" header="Nombre">
+	<template #body="slotProps">
+	  <b>{{ slotProps.data.username }}</b>
+	</template>
+      </Column>
+      
+      <Column field="role" header="Rol">
+	<template #body="slotProps">
+	  <template v-if="slotProps.data.role=='admin'">
+	    <Tag :value="admin" :severity="getRoleLabel(slotProps.data.role)" />
+	  </template>	
+	  <template v-else>    
+	    <Tag :value="tablet" :severity="getRoleLabel(slotProps.data.role)"/>
+	  </template>
+	</template>
+      </Column>
+      
+      <Column header="Acciones" style="min-width:8rem">
+	<template #body="slotProps">
+	  <Button class="icon-button" icon="pi pi-pencil" @click="editUser(slotProps.data)"></Button>
+	  <Button class="icon-button" icon="pi pi-trash" @click="deleteUser(slotProps.data)"></Button>
+	</template>
+      </Column>
     </DataTable>
     
     <Dialog v-model:visible="showUserForm" :modal="true" :style="{ 'width': '50vw' }"
@@ -53,15 +48,15 @@
     </template>
 
     <script setup lang="ts">
-    const active = "Activo"
-const inactivo= "Inactivo"
+    const admin = "Admin"
+    const tablet= "Tablet"
 
-const getStatusLabel = (status: Int) => {
-    switch (status) {
-    case 1:
-	return 'success';
-    case 0:
-	return 'danger';
+    const getRoleLabel = (role: string) => {
+    switch (role) {
+    case 'admin':
+    return 'success';
+    case 'tablet_master':
+    return 'danger';
     default:
 	return null;
     }

@@ -14,10 +14,6 @@
       <label for="role">Rol</label>
       <Dropdown id="role" v-model="user.role" :options="roleOptions" :placeholder="user.role ? user.role : 'Esoge un rol'" />
     </div>
-    <div class="p-field">
-      <label for="status">Status</label>
-      <Dropdown id="status" v-model="user.status" :options="statusOptions" :placeholder="user.status ? user.status : '1 para activo. 0 inactivo'" />
-    </div>
   </div>
     <Button label="Guardar" @click="saveUser" />
   </div>
@@ -30,10 +26,6 @@
   'admin', 
   ];
 
-  const statusOptions = [
-  '1',
-  '0', 
-  ];
   
   import { ref, onMounted, defineEmits } from 'vue';
   import InputText from 'primevue/inputtext';
