@@ -40,7 +40,6 @@ const orderStore = useOrderStore()
 const { order } = storeToRefs(orderStore)
 const badge = ref("0")
 const visible = ref(false);
-const icecreamAvailable = ref(false);
 
 /**
  * Updates badge that counts the total items in the order
@@ -53,7 +52,7 @@ const updateBadge = function (currentOrder: OrderProduct[]) {
 }
 
 const goToIcecreamPage = function () {
-  if (icecreamAvailable.value) {
+  if (orderStore.getOrderId) {
     navigateTo('/helado')
   } else {
     visible.value = true;
@@ -66,12 +65,6 @@ onMounted(() => {
 
 orderStore.$subscribe((mutation, state) => {
   updateBadge(state.order)
-  /*
-  if(state.orderCompleted) {
-    icecreamAvailable.state = true
-  }
-  */
-
 })
 
 </script>

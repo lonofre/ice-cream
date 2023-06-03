@@ -45,7 +45,7 @@ productRouter.get(
 // GET: A single product by ID
 productRouter.get(
   "/:id",
-  loginAuth,
+  //loginAuth, ! Add back after tests
   async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const product = await ProductService.getProductById(id);
