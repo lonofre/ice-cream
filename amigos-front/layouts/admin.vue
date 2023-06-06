@@ -8,11 +8,13 @@
                 <NuxtLink to="/admin"><Button label="Productos" :class="'mr-3'"
                     severity="info" :text="route.path != '/admin'" rounded />
                 </NuxtLink>
+                <!--
                 <NuxtLink to="/admin/helados"><Button label="Helados"
                     severity="info" :class="'mr-3'" :text="route.path != '/admin/helados'"
                         rounded /></NuxtLink>
                 <NuxtLink to="/admin/usuarios"><Button label="Usuarios" :class="'mr-3'"
                         :text="route.path != '/admin/usuarios'" severity="info" rounded /></NuxtLink>
+                        -->
                 <Button label="Cerrar sesión" icon="pi pi-arrow-circle-down" :class="'mr-3'"
                     text severity="danger" @click="logout" rounded />
             </div>
