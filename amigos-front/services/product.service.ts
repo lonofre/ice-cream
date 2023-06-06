@@ -76,12 +76,11 @@ export default class ProductService {
 
 	async getProductById(id: number) {
 		try {
-			const product = await this.axios.get<Product>(
-				`http://localhost:8000/product/${id}`,
+			const { data, status } = await this.axios.get<Product[]>(
+				`/product/${id}`,
 			)
-			return { data: product}
+			return { data, status }
 		} catch (e: any) {
-			console.log(e);
 			if (e instanceof AxiosError) {
 				const status = e?.response?.status
 				return { data: null, status }

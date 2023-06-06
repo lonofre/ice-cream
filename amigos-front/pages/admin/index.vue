@@ -140,7 +140,7 @@ const deleteProduct = async (product: Product) => {
         // Update the list of products removing the deleted element
         products.value = products.value.filter((p) => p.id !== product.id);
       } else {
-        toast.add({ severity: 'success', summary: 'No se pudo eliminar el producto', life: 3000 });
+        toast.add({ severity: 'error', summary: 'No se pudo eliminar el producto', life: 3000 });
       }
     },
     reject: () => {

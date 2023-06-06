@@ -45,7 +45,7 @@ productRouter.get(
 // GET: A single product by ID
 productRouter.get(
   "/:id",
-  //loginAuth, ! Add back after tests
+  loginAuth, 
   async (request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     const product = await ProductService.getProductById(id);
@@ -60,8 +60,7 @@ productRouter.get(
 // Params: name, description, image, price, categoryId
 productRouter.post(
   "/",
-  // ! Orders tests. Remove later
-  //adminLoginAuth,
+  adminLoginAuth,
   body("name").isString(),
   body("description").isString(),
   body("image").isString(),
